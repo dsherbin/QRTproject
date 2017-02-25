@@ -87,6 +87,7 @@ void SRI_CLI::parse(string input) {
         return;
     }
     
+    // TODO: Split these into functions.
     // Using string literals because these commands are required and static.
     if(words[0] == "LOAD")
         // TODO: Load an SRI file here.

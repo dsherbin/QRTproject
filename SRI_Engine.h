@@ -18,7 +18,8 @@ using std::map;
 #include <iostream> // For console debugging
 
 
-//TODO: Move to own files.
+//TODO: Move structs to own .h/.cpp files, split constructors.
+
 struct QueryParam {
     string given_name; // Name as provided by the user.
     vector<int> pos;   // Param positions this value occured at.
@@ -45,6 +46,10 @@ struct Fact {
 //    vals = v;
 //}
 
+
+// ----------------------------
+// This section is a mess from me trying to figure out rule inferrence.
+// ----------------------------
 struct RFact {
     string name;
     vector<string> params;
@@ -67,7 +72,13 @@ struct Rule {
         //fact_names = facts;
     };
 };
+// ----------------------------
+// end mess
+// ----------------------------
 
+
+// Note: it might make more sense in terms of code structure to
+// split 'facts' and 'rules', and their associated functions, into KB and RB classes. 
 class SRI_Engine {
     private:
       map<string, vector<Fact>> facts;
