@@ -103,13 +103,13 @@ void SRI_CLI::parse(string input) {
         
         vector<char> delim = {'(', ',', ')'};
         std::vector<string> fact_params_all = split(words[1], &delim);
-        fact_params_all
+        fact_params_all.erase(fact_params_all.begin());
         
         //std::vector<string> fact_params;
         //for(int i = 1; i < fact_params_all.size(); i++)
         //    fact_params.push_back(fact_params_all[i]);
         
-        engine->addFact(fact_params_all[0], fact_params);
+        engine->addFact(fact_params_all[0], fact_params_all);
         return;
     }
     else if(words[0] == "RULE") {
