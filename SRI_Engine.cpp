@@ -187,10 +187,10 @@ vector<Fact*> SRI_Engine::queryFacts(string f_name, vector<string> params) {
 // ----------------------------
 // Rules / rule inferrence mess section
 // ----------------------------
-/*
+
 // r_name is the rule name
 // params is the list of named variables/parameters used in the invocation
-vector<Fact*> invokeRule(string r_name, vector<string> params) {
+vector<Fact*> SRI_Engine::invokeRule(string r_name, vector<string> params) {
     
     // Example usage:
     //  defined with RULE GrandFather($X,$Y):- AND Father($X,$Z) Parent($Z,$Y)
@@ -202,11 +202,13 @@ vector<Fact*> invokeRule(string r_name, vector<string> params) {
     //      for the first fact defined in the rule, compare param to rule format saved.
     //
     //
+    
+    
+    
+    vector<Fact*> results;
     /*
     int nParams = params.size();
     vector<QueryParam> qParams;
-    vector<Fact*> results;
-    
     // Build the list of query parameters from the raw parameter input.
     // Loop through each given param string.
     for(int i = 0; i < params.size(); i++) {
@@ -226,17 +228,27 @@ vector<Fact*> invokeRule(string r_name, vector<string> params) {
         }
         if(!dupe) qParams.push_back(QueryParam(params[i], i));
     }
-    
     // qParams is now a list of given_names, the names provided by the user when querying,
     // and pos, a list of positions within the initial call the values occured at.
     */
-/*
-    Rule* r = &rules[r_name];
+
+    vector<Rule>* rl = &(rules[r_name]);
+    Rule* r = &(rl->front()); // POPPING FIRST ENTRY FOR TESTING -- MULTIPLE RULES OF THE SAME NAME WONT WORK.
+    //for(int i = 0; i < rl->size(); i++) {
+    
     if(!r) { std::cout << "No rule by that name.\n"; return results; }
 
+
+    // Build a mapping structure so we know what the "actual" params being used
+    // in place of the rule params.
+    // For example, if rule R($X,$Y) invoked with ($A,George), this map will contain:
+    //  [$X] = $A
+    //  [$Y] = George
     map<string,string> rule_param_to_calling_param;
-    for(int i = 0; i < r.params.size(); i++)
-        rule_param_to_calling_param[r.params[i]] = params[i];
+    for(int i = 0; i < r->params.size(); i++)
+        rule_param_to_calling_param[r->params[i]] = params[i];
+    
+    
     
     for(int i = 0; i < r->facts.size(); i++) {
         
@@ -248,7 +260,6 @@ vector<Fact*> invokeRule(string r_name, vector<string> params) {
             if(it != rule_param_to_calling_param.end())
                 factParams[j] = it->second;
         }
-        
         // factParams now contains the list of calling params where
         // any previously defined param of the rule is replaced with
         // a calling param, if available.
@@ -256,7 +267,6 @@ vector<Fact*> invokeRule(string r_name, vector<string> params) {
         queryFacts(r->facts[i].name, factParams);
     }
 }
-*/
 
 /*
 void SRI_Engine::evaluateRule(string r_name, vector<string> params) {

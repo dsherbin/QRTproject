@@ -50,6 +50,9 @@ struct Fact {
 // ----------------------------
 // This section is a mess from me trying to figure out rule inferrence.
 // ----------------------------
+
+// An RFact is a Fact as defined by a rule. It has to store a name, and the
+// params as defined by the rule as opposed to those defined by the fact.
 struct RFact {
     string name;
     vector<string> params;
@@ -58,17 +61,20 @@ struct RFact {
 // A rule is declared by the user through the input:
 //   RULENAME($P1,$P2...):- AND|OR FACT1($P?,$P?...) FACT2($P?, $P?...) ...
 struct Rule {
-    string format; // Format of given parameters
+    //string format; // Format of given parameters
     
     vector<string> params; // Params after RULENAME, i.e. [$X, $Y]
     
-    // TODO: Make this an enum or something else more intuitive
+    // TODO: Make this an enum or something else more intuitive?
     bool andtype; // AND or OR
     vector<RFact> facts;
     
-    Rule(string f, bool t, vector<string> facts) {
-        format = f;
+    Rule(bool t, vector<string> p, vector<RFact> f) {
+    //string f, bool t, vector<string> facts) {
+        //format = f;
         andtype = t;
+        params = p;
+        facts = f;
         //fact_names = facts;
     };
 };
@@ -88,6 +94,7 @@ class SRI_Engine {
       void addFact(string, vector<string>);
       void addRule(string, string, bool, vector<string>);
       vector<Fact*> queryFacts(string, vector<string>);
+      vector<Fact*> invokeRule(string, vector<string>);
       void print();
 
 };

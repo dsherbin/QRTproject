@@ -132,7 +132,6 @@ void SRI_CLI::parse(string input) {
             rule_params.push_back(words[i]);
         engine->addRule(name, format, type, rule_params);
         
-    
         return;
     }
     else if(words[0] == "INFERENCE") {
