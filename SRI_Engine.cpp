@@ -13,6 +13,8 @@
 // Params:
 //      name: The name of the fact to be added. Not necessarily unique to other facts. Example: "Father"
 //      params: A list of parameters associated with the fact. Example: "[Roger, Fred]"
+//
+// TODO: Check rule base -- don't allow a new fact to share a name with a rule.
 void SRI_Engine::addFact(string def, string name, vector<string> params) {
     // Check for duplicate entries.
     for(auto i: facts[name]) {
@@ -38,6 +40,7 @@ void SRI_Engine::addFact(string def, string name, vector<string> params) {
 // Work in progress.
 void SRI_Engine::addRule(string def, string name, bool type, vector<string> params, vector<RFact> rfacts) {
     // TODO: Check for duplicates
+    // TODO: Check fact base -- don't allow a new rule to share a name with a fact.
     
     rules[name].push_back(Rule(def, type, params, rfacts));
 }
@@ -61,15 +64,6 @@ bool SRI_Engine::checkFact(const Fact& f, const vector<QueryParam>& qp, int np) 
     }
     
     vector<QueryParam> current_vals(qp); // Make copy of parameters, so we can edit this copy.
-    
-    /*
-    std::cout << "current_vals: " << std::endl;
-    for(auto i : current_vals) {
-        std::cout << i.given_name << " at positions ";
-        for(auto j : i.pos)
-            std::cout << j << ",";
-    }
-    */
     
     // Loop through each value of the fact.
     for(int i = 0; i < f.vals.size(); i++) {
@@ -203,70 +197,47 @@ vector<Fact*> SRI_Engine::queryRules(string r_name, vector<string> params) {
     //
     //
     
-    
-    
     vector<Fact*> results;
-    /*
-    int nParams = params.size();
-    vector<QueryParam> qParams;
-    // Build the list of query parameters from the raw parameter input.
-    // Loop through each given param string.
-    for(int i = 0; i < params.size(); i++) {
-        bool dupe = false;
-        // Compare the given string to the values already converted into QueryParams.
-        for(int j = 0; j < qParams.size(); j++) {
-            if(params[i] == qParams[j].given_name) {
-                // If the names match, we have multiple params representing the same value, I.E. Employer($A,$A).
-                //std::cout << "[DEBUG]: found a duplicate param\n";
-                dupe = true;
-                qParams[j].pos.push_back(i);
-                //std::cout << "[DEBUG]: new pos list contains: ";
-                //for(auto k : qParams[j].pos) {  std::cout << k << ","; }
-                //std::cout << std::endl;
-                break;
-            }
-        }
-        if(!dupe) qParams.push_back(QueryParam(params[i], i));
-    }
-    // qParams is now a list of given_names, the names provided by the user when querying,
-    // and pos, a list of positions within the initial call the values occured at.
-    */
-
+    
     vector<Rule>* rl = &(rules[r_name]);
-    Rule* r = &(rl->front()); // POPPING FIRST ENTRY FOR TESTING -- MULTIPLE RULES OF THE SAME NAME WONT WORK.
-    //for(int i = 0; i < rl->size(); i++) {
     
-    if(!r) { std::cout << "No rule by that name.\n"; return results; }
+    for(vector<Rule>::iterator ri = rl->begin(); ri != rl->end(); ri++) {
+        
+        Rule* r = &(*ri);
+        //Rule* r = rl[ri];//&(rl->front()); // POPPING FIRST ENTRY FOR TESTING -- MULTIPLE RULES OF THE SAME NAME WONT WORK.
+        
+        if(!r) { std::cout << "No rule by that name.\n"; return results; }
 
 
-    // Build a mapping structure so we know what the "actual" params being used
-    // in place of the rule params.
-    // For example, if rule R($X,$Y) invoked with ($A,George), this map will contain:
-    //  [$X] = $A
-    //  [$Y] = George
-    map<string,string> rule_param_to_calling_param;
-    for(int i = 0; i < r->params.size(); i++)
-        rule_param_to_calling_param[r->params[i]] = params[i];
-    
-    
-    
-    for(int i = 0; i < r->facts.size(); i++) {
+        // Build a mapping structure so we know what the "actual" params being used
+        // in place of the rule params.
+        // For example, if rule R($X,$Y) invoked with ($A,George), this map will contain:
+        //  [$X] = $A
+        //  [$Y] = George
+        map<string,string> rule_param_to_calling_param;
+        for(int i = 0; i < r->params.size(); i++)
+            rule_param_to_calling_param[r->params[i]] = params[i];
         
-        vector<string> factParams(r->facts[i].params); // Copy parameter format for editing
         
-        // Iterate through each parameter and try to match it to a previous parameter.
-        for(int j = 0; j < factParams.size(); j++) {
-            auto it = rule_param_to_calling_param.find(factParams[j]);
-            if(it != rule_param_to_calling_param.end())
-                factParams[j] = it->second;
+        for(int i = 0; i < r->facts.size(); i++) {
+            
+            vector<string> factParams(r->facts[i].params); // Copy parameter format for editing
+            
+            // Iterate through each parameter and try to match it to a previous parameter.
+            for(int j = 0; j < factParams.size(); j++) {
+                auto it = rule_param_to_calling_param.find(factParams[j]);
+                if(it != rule_param_to_calling_param.end())
+                    factParams[j] = it->second;
+            }
+            // factParams now contains the list of calling params where
+            // any previously defined param of the rule is replaced with
+            // a calling param, if available.
+            
+            queryFacts(r->facts[i].name, factParams);
         }
-        // factParams now contains the list of calling params where
-        // any previously defined param of the rule is replaced with
-        // a calling param, if available.
-        
-        queryFacts(r->facts[i].name, factParams);
     }
 }
+
 
 // Perform a query on either a rule or a fact.
 // Scans the KB and RB for matches to name, then calls queryFact or queryRule
@@ -288,34 +259,6 @@ vector<Fact*> SRI_Engine::query(string name, vector<string> params) {
     return results; // return empty list.
 }
 
-/*
-void SRI_Engine::evaluateRule(string r_name, vector<string> params) {
-    Rule r = rules[r_name];
-    
-    vector<string> rule_param_names;
-    int i = 0;
-    bool capturing = false;
-    string pname = "";
-    while(r.format[i] != ')') {
-        if(r.format[i] == '$') {
-            capturing = true;
-            continue;
-        }
-        else if (r.format[i] == ',')
-            if(pname != "") rule_param_names.push_back(pname);
-            capturing = false;
-        }
-        if(capturing)
-            pname += r.format[i];
-    }
-    if(pname != "") rule_param_names.push_back(pname);
-
-    map<string, string> param_map; // Maps the given parameters to those defined in the rule.
-
-    
-
-}
-*/
 // ----------------------------
 // end mess
 // ----------------------------

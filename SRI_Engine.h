@@ -56,7 +56,7 @@ struct Fact {
 // ----------------------------
 
 // An RFact is a Fact as defined by a rule. It has to store a name, and the
-// params as defined by the rule as opposed to those defined by the fact.
+// params as defined by the rule (as opposed to those defined by the fact.)
 struct RFact {
     string name;
     vector<string> params;

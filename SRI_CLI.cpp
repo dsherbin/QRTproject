@@ -12,18 +12,23 @@ SRI_CLI::SRI_CLI() {
     engine = new SRI_Engine;
     exit = false;
     // DEBUG SECTION
-    std::vector<string> testparams; testparams.push_back("Marry"); testparams.push_back("George");
-    engine->addFact("FACT Father(Marry,George)", "Father", testparams);
+    //std::vector<string> testparams; testparams.push_back("Marry"); testparams.push_back("George");
+    //engine->addFact("FACT Father(Marry,George)", "Father", testparams);
     
     // Parent($X,$Y):- OR Father($X,$Y) Mother($X,$Y)
-    vector<string> rparams; rparams.push_back("$X"); rparams.push_back("$Y");
-    vector<RFact> rfacts;
-    vector<string> father_params; father_params.push_back("$X"); father_params.push_back("$Y");
-    rfacts.push_back(RFact("Father", father_params));
-    vector<string> mother_params; mother_params.push_back("$X"); mother_params.push_back("$Y");
-    rfacts.push_back(RFact("Mother", mother_params));
+    //vector<string> rparams; rparams.push_back("$X"); rparams.push_back("$Y");
+    //vector<RFact> rfacts;
+    //vector<string> father_params; father_params.push_back("$X"); father_params.push_back("$Y");
+    //rfacts.push_back(RFact("Father", father_params));
+    //vector<string> mother_params; mother_params.push_back("$X"); mother_params.push_back("$Y");
+    //rfacts.push_back(RFact("Mother", mother_params));
     
-    engine->addRule("RULE Parent($X,$Y):- OR Father($X,$Y) Mother($X,$Y)", "Parent", false, rparams, rfacts);
+    //engine->addRule("RULE Parent($X,$Y):- OR Father($X,$Y) Mother($X,$Y)", "Parent", false, rparams, rfacts);
+    parse("FACT Father(Roger,John)");
+    parse("FACT Mother(Marry,John)");
+    parse("FACT Father(Roger,Albert)");
+    parse("FACT Mother(Marry,Albert)");
+    parse("RULE Parent($X,$Y):- OR Father($X,$Y) Mother($X,$Y)");
     
     engine->print();
 }
@@ -113,6 +118,8 @@ void SRI_CLI::parse(string input) {
             return;
         }
         
+        
+        // TODO: This can be tightened up.
         vector<char> delim = {'(', ',', ')'};
         std::vector<string> fact_params_all = split(words[1], &delim);
         //fact_params_all.erase(fact_params_all.begin());
@@ -125,13 +132,22 @@ void SRI_CLI::parse(string input) {
         return;
     }
     else if(words[0] == "RULE") {
+        vector<char> delim = {'(', ',', ')'};
+        // Example of a valid rule input:
+        //   RULE Parent($X,$Y):- OR Father($X,$Y) Mother($X,$Y)
+        //   words[0]: RULE, words[1]: Parent($X,$Y):-, words[2]: OR
+        //   words[3]: Father($X,$Y), words[4]: Mother($X,$Y);
         // NYI -- does nothing
         // Define a rule.
-        //int p = words[1].find(":-");
-        string name = words[1].substr(0, words[1].find("("));//words[1].substr(0, words[1].find(":-"));
-        //std::cout << ":- found at position " << p << std::endl;
-        
-        //string format = words[1].substr(words[1].find("("), words[1].find(")"));
+        int name_end = words[1].find("(");
+        string name = words[1].substr(0, name_end);
+        int params_end = words[1].find(")");
+        string raw_params = words[1].substr(name_end, (params_end - name_end) + 1);
+        //std::cout << "raw_params: " << raw_params << std::endl;
+        vector<string> params = split(raw_params, &delim);
+        //std::cout << "params: ";
+        //for(auto i : params) std::cout << i << ",";
+        //std::cout << std::endl;
         
         bool type;
         if(words[2] == "AND")
@@ -139,12 +155,29 @@ void SRI_CLI::parse(string input) {
         if(words[2] == "OR")
             type = false;
         
-        std::vector<string> rule_params;
-        for(int i = 3; i < words.size(); i++)
-            rule_params.push_back(words[i]);
-        //engine->addRule(input, name, format, type, rule_params);
+        vector<RFact> rfacts;
         
-        //engine->addRule(input, name, type, params, rfacts);
+        for(int i = 3; i < words.size(); i++) {
+            vector<string> rfact_params = split(words[i], &delim);
+            string rfact_name = rfact_params[0];
+            rfact_params.erase(rfact_params.begin());
+            
+            rfacts.push_back(RFact(rfact_name, rfact_params));
+            //std::cout << "rfact_name for word[" << i << "]: " << rfact_name << std::endl;
+            //for(auto j : rfact_params)
+            //    std::cout << "rfact_params from word[" << i << "]: " << j << std::endl;
+        }
+        
+        /*
+        std::vector<string> rfact_params;
+        for(int i = 3; i < words.size(); i++)
+            rfact_params.push_back(words[i]);
+        */
+        
+        //engine->addRule(input, name, type, rfacts);
+        
+        
+        engine->addRule(input, name, type, params, rfacts);
         
         return;
     }
