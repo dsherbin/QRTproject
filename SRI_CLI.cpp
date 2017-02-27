@@ -13,7 +13,7 @@ SRI_CLI::SRI_CLI() {
     exit = false;
     // DEBUG SECTION
     std::vector<string> testparams; testparams.push_back("Marry"); testparams.push_back("George");
-    engine->addFact("Father", testparams);
+    engine->addFact("FACT Father(Marry,George)", "Father", testparams);
     
     // Parent($X,$Y):- OR Father($X,$Y) Mother($X,$Y)
     vector<string> rparams; rparams.push_back("$X"); rparams.push_back("$Y");
@@ -23,7 +23,7 @@ SRI_CLI::SRI_CLI() {
     vector<string> mother_params; mother_params.push_back("$X"); mother_params.push_back("$Y");
     rfacts.push_back(RFact("Mother", mother_params));
     
-    engine->addRule("Parent", false, rparams, rfacts);
+    engine->addRule("RULE Parent($X,$Y):- OR Father($X,$Y) Mother($X,$Y)", "Parent", false, rparams, rfacts);
     
     engine->print();
 }
@@ -121,10 +121,11 @@ void SRI_CLI::parse(string input) {
         for(int i = 1; i < fact_params_all.size(); i++)
             fact_params.push_back(fact_params_all[i]);
         
-        engine->addFact(fact_params_all[0], fact_params);
+        engine->addFact(input, fact_params_all[0], fact_params);
         return;
     }
     else if(words[0] == "RULE") {
+        // NYI -- does nothing
         // Define a rule.
         //int p = words[1].find(":-");
         string name = words[1].substr(0, words[1].find("("));//words[1].substr(0, words[1].find(":-"));
@@ -141,7 +142,7 @@ void SRI_CLI::parse(string input) {
         std::vector<string> rule_params;
         for(int i = 3; i < words.size(); i++)
             rule_params.push_back(words[i]);
-        //engine->addRule(name, format, type, rule_params);
+        //engine->addRule(input, name, format, type, rule_params);
         
         return;
     }
@@ -152,8 +153,7 @@ void SRI_CLI::parse(string input) {
         string name = words[1].substr(0, name_end);
         
         vector<char> delim = {'(',')', ','};
-        vector<string> query_params = split(
-            words[1].substr(name_end), &delim);
+        vector<string> query_params = split(words[1].substr(name_end), &delim);
         //for(auto i : query_params) std::cout << i << ",";
         
         //engine->queryFacts(name, query_params);

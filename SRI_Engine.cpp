@@ -13,7 +13,7 @@
 // Params:
 //      name: The name of the fact to be added. Not necessarily unique to other facts. Example: "Father"
 //      params: A list of parameters associated with the fact. Example: "[Roger, Fred]"
-void SRI_Engine::addFact(string name, vector<string> params) {
+void SRI_Engine::addFact(string def, string name, vector<string> params) {
     // Check for duplicate entries.
     for(auto i: facts[name]) {
         if(i.vals.size() != params.size()) continue; // Not a match.
@@ -32,14 +32,14 @@ void SRI_Engine::addFact(string name, vector<string> params) {
     }
 
     // Add to fact list.
-    facts[name].push_back(Fact(params));
+    facts[name].push_back(Fact(def, params));
 }
 
 // Work in progress.
-void SRI_Engine::addRule(string name, bool type, vector<string> params, vector<RFact> rfacts) {
+void SRI_Engine::addRule(string def, string name, bool type, vector<string> params, vector<RFact> rfacts) {
     // TODO: Check for duplicates
     
-    rules[name].push_back(Rule(type, params, rfacts));
+    rules[name].push_back(Rule(def, type, params, rfacts));
 }
 
 
@@ -327,9 +327,10 @@ void SRI_Engine::print() {
     for(auto i : facts) {
         std::cout << "facts[" << i.first << "] = \n";
         for(auto j : i.second) {
-            for(auto k : j.vals)
-                std::cout << k << ",";
-            std::cout << std::endl;
+            std::cout << j.def << std::endl;
+            //for(auto k : j.vals)
+            //    std::cout << k << ",";
+            //std::cout << std::endl;
         }
         std::cout << std::endl;
     }
@@ -338,20 +339,17 @@ void SRI_Engine::print() {
     for(auto i : rules) {
         std::cout << "rules[" << i.first << "] = \n";
         for(auto j : i.second) {
-            std::cout << "params: ";
-            for(auto k : j.params) std::cout << k << ",";
-            std::cout << std::endl;
-            
-            std::cout << "facts: " << std::endl;
-            for(auto k : j.facts) {
-                std::cout << k.name << "(";
-                for(auto x : k.params) std::cout << x << ",";
-                std::cout << ")" << std::endl;
-            }
-            //std::cout << "format: " << j.format << std::endl;
-            //for(auto k : j.fact_names)
-            //    std::cout << k << ",";
+            std::cout << j.def << std::endl;
+            //std::cout << "params: ";
+            //for(auto k : j.params) std::cout << k << ",";
             //std::cout << std::endl;
+            
+            //std::cout << "facts: " << std::endl;
+            //for(auto k : j.facts) {
+            //    std::cout << k.name << "(";
+            //    for(auto x : k.params) std::cout << x << ",";
+            //    std::cout << ")" << std::endl;
+            //}
         }
         std::cout << std::endl;
     }

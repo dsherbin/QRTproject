@@ -39,9 +39,12 @@ struct QueryParam {
 
 struct Fact {
     // Note: might want to add the name here, even though its stored in the engine as the index.
-    //string def; // The actual string used to define this fact, for processing efficiency. WIP
+    string def; // The actual string used to define this fact, for processing efficiency. WIP
     vector<string> vals;
-    Fact(vector<string> v) { vals = v; };
+    Fact(string d, vector<string> v) {
+        def = d;
+        vals = v;
+    };
 };
 //Fact::Fact(vector<string> v) {
 //    vals = v;
@@ -67,7 +70,7 @@ struct RFact {
 //   RULENAME($P1,$P2...):- AND|OR FACT1($P?,$P?...) FACT2($P?, $P?...) ...
 struct Rule {
     //string format; // Format of given parameters
-    //string def; // Actual string used to define this rule, for processing efficiency. WIP
+    string def; // Actual string used to define this rule, for processing efficiency. WIP
     
     vector<string> params; // Params after RULENAME, i.e. [$X, $Y]
     
@@ -75,9 +78,10 @@ struct Rule {
     bool andtype; // AND or OR
     vector<RFact> facts;
     
-    Rule(bool t, vector<string> p, vector<RFact> f) {
+    Rule(string d, bool t, vector<string> p, vector<RFact> f) {
     //string f, bool t, vector<string> facts) {
         //format = f;
+        def = d;
         andtype = t;
         params = p;
         facts = f;
@@ -97,9 +101,9 @@ class SRI_Engine {
       map<string, vector<Rule>> rules;
       bool checkFact(const Fact&, const vector<QueryParam>&, int);
     public:
-      void addFact(string, vector<string>);
+      void addFact(string, string, vector<string>);
       //void addRule(string, string, bool, vector<string>);
-      void addRule(string, bool, vector<string>, vector<RFact>);
+      void addRule(string, string, bool, vector<string>, vector<RFact>);
       vector<Fact*> queryFacts(string, vector<string>);
       vector<Fact*> queryRules(string, vector<string>);
       vector<Fact*> query(string, vector<string>);
