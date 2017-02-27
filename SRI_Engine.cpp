@@ -36,10 +36,10 @@ void SRI_Engine::addFact(string name, vector<string> params) {
 }
 
 // Work in progress.
-void SRI_Engine::addRule(string name, string format, bool type, vector<string> facts) {
+void SRI_Engine::addRule(string name, bool type, vector<string> params, vector<RFact> rfacts) {
     // TODO: Check for duplicates
     
-    rules[name].push_back(Rule(format, type, facts));
+    rules[name].push_back(Rule(type, params, rfacts));
 }
 
 
@@ -190,7 +190,7 @@ vector<Fact*> SRI_Engine::queryFacts(string f_name, vector<string> params) {
 
 // r_name is the rule name
 // params is the list of named variables/parameters used in the invocation
-vector<Fact*> SRI_Engine::invokeRule(string r_name, vector<string> params) {
+vector<Fact*> SRI_Engine::queryRules(string r_name, vector<string> params) {
     
     // Example usage:
     //  defined with RULE GrandFather($X,$Y):- AND Father($X,$Z) Parent($Z,$Y)
@@ -268,6 +268,26 @@ vector<Fact*> SRI_Engine::invokeRule(string r_name, vector<string> params) {
     }
 }
 
+// Perform a query on either a rule or a fact.
+// Scans the KB and RB for matches to name, then calls queryFact or queryRule
+// depending on where we found the match.
+//
+// Assumes no duplicate names exist between rules and facts.
+// In this situation, it will only return the first entry found (the queryfact results).
+vector<Fact*> SRI_Engine::query(string name, vector<string> params) {
+    vector<Fact*> results;
+    auto fi = facts.find(name);
+    if(fi != facts.end())
+        return queryFacts(name, params);
+    
+    auto ri = rules.find(name);
+    if(ri != rules.end())
+        return queryRules(name, params);
+    
+    std::cout << "Couldn't find a match in facts or rules.\n";
+    return results; // return empty list.
+}
+
 /*
 void SRI_Engine::evaluateRule(string r_name, vector<string> params) {
     Rule r = rules[r_name];
@@ -318,10 +338,20 @@ void SRI_Engine::print() {
     for(auto i : rules) {
         std::cout << "rules[" << i.first << "] = \n";
         for(auto j : i.second) {
-            std::cout << "format: " << j.format << std::endl;
+            std::cout << "params: ";
+            for(auto k : j.params) std::cout << k << ",";
+            std::cout << std::endl;
+            
+            std::cout << "facts: " << std::endl;
+            for(auto k : j.facts) {
+                std::cout << k.name << "(";
+                for(auto x : k.params) std::cout << x << ",";
+                std::cout << ")" << std::endl;
+            }
+            //std::cout << "format: " << j.format << std::endl;
             //for(auto k : j.fact_names)
             //    std::cout << k << ",";
-            std::cout << std::endl;
+            //std::cout << std::endl;
         }
         std::cout << std::endl;
     }

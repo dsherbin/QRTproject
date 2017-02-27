@@ -14,6 +14,17 @@ SRI_CLI::SRI_CLI() {
     // DEBUG SECTION
     std::vector<string> testparams; testparams.push_back("Marry"); testparams.push_back("George");
     engine->addFact("Father", testparams);
+    
+    // Parent($X,$Y):- OR Father($X,$Y) Mother($X,$Y)
+    vector<string> rparams; rparams.push_back("$X"); rparams.push_back("$Y");
+    vector<RFact> rfacts;
+    vector<string> father_params; father_params.push_back("$X"); father_params.push_back("$Y");
+    rfacts.push_back(RFact("Father", father_params));
+    vector<string> mother_params; mother_params.push_back("$X"); mother_params.push_back("$Y");
+    rfacts.push_back(RFact("Mother", mother_params));
+    
+    engine->addRule("Parent", false, rparams, rfacts);
+    
     engine->print();
 }
 
@@ -130,14 +141,13 @@ void SRI_CLI::parse(string input) {
         std::vector<string> rule_params;
         for(int i = 3; i < words.size(); i++)
             rule_params.push_back(words[i]);
-        engine->addRule(name, format, type, rule_params);
+        //engine->addRule(name, format, type, rule_params);
         
         return;
     }
     else if(words[0] == "INFERENCE") {
         // Perform a query.
         
-        // Only targetting fact query right now
         int name_end = words[1].find("(");
         string name = words[1].substr(0, name_end);
         
@@ -146,9 +156,9 @@ void SRI_CLI::parse(string input) {
             words[1].substr(name_end), &delim);
         //for(auto i : query_params) std::cout << i << ",";
         
-        engine->queryFacts(name, query_params);
+        //engine->queryFacts(name, query_params);
     
-        //engine->query(
+        engine->query(name, query_params);
     
         return;
     }
