@@ -129,9 +129,9 @@ void SRI_CLI::parse(string input) {
         // Define a rule.
         //int p = words[1].find(":-");
         string name = words[1].substr(0, words[1].find("("));//words[1].substr(0, words[1].find(":-"));
-        //std::cout << ":- found at position " << p << std::e ndl;
+        //std::cout << ":- found at position " << p << std::endl;
         
-        string format = words[1].substr(words[1].find("("), words[1].find(")"));
+        //string format = words[1].substr(words[1].find("("), words[1].find(")"));
         
         bool type;
         if(words[2] == "AND")
@@ -143,6 +143,8 @@ void SRI_CLI::parse(string input) {
         for(int i = 3; i < words.size(); i++)
             rule_params.push_back(words[i]);
         //engine->addRule(input, name, format, type, rule_params);
+        
+        //engine->addRule(input, name, type, params, rfacts);
         
         return;
     }
