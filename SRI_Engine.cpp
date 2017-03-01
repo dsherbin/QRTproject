@@ -20,7 +20,7 @@ void SRI_Engine::addFact(string def, string name, vector<string> params) {
     for(auto i: facts[name]) {
         if(i.vals.size() != params.size()) continue; // Not a match.
         bool entries_match = true;
-        for(int j = 0; j < i.vals.size(); j++) {
+        for(unsigned int j = 0; j < i.vals.size(); j++) {
             //std::cout << "comparing " << params[j] << " and " << i.vals[j] << std::endl;
             if(params[j] != i.vals[j]) {
                 entries_match = false; // Not a match.
@@ -58,7 +58,7 @@ void SRI_Engine::addRule(string def, string name, bool type, vector<string> para
 // Returns:
 //      true if the fact meets the requirements defined by the QueryParams, false otherwise.
 bool SRI_Engine::checkFact(const Fact& f, const vector<QueryParam>& qp, int np) {
-    if(f.vals.size() != np) {
+    if(f.vals.size() != (unsigned int)np) {
         //std::cout << "[DEBUG]: Fact doesn't match because the number of parameters don't match the number of values.\n";
         return false; // Check that lengths match.
     }
@@ -66,7 +66,7 @@ bool SRI_Engine::checkFact(const Fact& f, const vector<QueryParam>& qp, int np) 
     vector<QueryParam> current_vals(qp); // Make copy of parameters, so we can edit this copy.
     
     // Loop through each value of the fact.
-    for(int i = 0; i < f.vals.size(); i++) {
+    for(unsigned int i = 0; i < f.vals.size(); i++) {
         std::cout << "[DEBUG]: number of values to check: " << f.vals.size() << std::endl;
         // Note that i is the position of the fact's value.
         // I.E. for Father(Roger,George), Roger is in position i = 0, George in i = 1.
@@ -236,6 +236,7 @@ vector<Fact*> SRI_Engine::queryRules(string r_name, vector<string> params) {
             queryFacts(r->facts[i].name, factParams);
         }
     }
+    return results;
 }
 
 
@@ -262,6 +263,31 @@ vector<Fact*> SRI_Engine::query(string name, vector<string> params) {
 // ----------------------------
 // end mess
 // ----------------------------
+
+//dump the contents of the SRI_Engine to the file specified by filename
+void SRI_Engine::dump(string filename){
+    std::ofstream out(filename);
+
+    //dump facts
+    for(auto it = facts.begin(); it != facts.end(); ++it){
+        std::pair <const std::basic_string<char>, std::vector<Fact> > val = (*it);
+        vector<Fact> outFacts = std::get<1>(val);
+        for(auto iter = outFacts.begin(); iter != outFacts.end(); ++iter){
+            out << (*iter).def << std::endl;
+            std::cout << (*iter).def << std::endl;
+        }
+    }
+    //then rules
+    for(auto it = rules.begin(); it != rules.end(); ++it){
+        std::pair <const std::basic_string<char>, std::vector<Rule> > val = (*it);
+        vector<Rule> outRules = std::get<1>(val);
+        for(auto iter = outRules.begin(); iter != outRules.end(); ++iter){
+            out << (*iter).def << std::endl;
+            std::cout << (*iter).def << std::endl;
+        }
+    }
+    out.close();
+}
 
 // This is a debug function that dumps all facts and rules to the console.
 // Rule printing currently wonky while I mess with the rule definition.

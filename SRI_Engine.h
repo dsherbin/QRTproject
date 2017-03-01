@@ -11,6 +11,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <fstream>
 using std::vector;
 using std::string;
 using std::map;
@@ -107,6 +108,7 @@ class SRI_Engine {
       vector<Fact*> queryFacts(string, vector<string>);
       vector<Fact*> queryRules(string, vector<string>);
       vector<Fact*> query(string, vector<string>);
+      void dump(string filename);
       void print();
 
 };

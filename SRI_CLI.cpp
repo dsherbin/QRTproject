@@ -105,13 +105,14 @@ void SRI_CLI::parse(string input) {
     
     // TODO: Split these into functions.
     // Using string literals because these commands are required and static.
-    if(words[0] == "LOAD")
+    if(words[0] == "LOAD"){
         // TODO: Load an SRI file here.
         return;
-    else if(words[0] == "DUMP")
+    }else if(words[0] == "DUMP"){
         // TODO: Dump an SRI file here.
+        engine->dump(words[1]);
         return;
-    else if(words[0] == "FACT") {
+    }else if(words[0] == "FACT") {
         // Define a fact.
         if(words.size() < 2) {
             std::cout << "Invalid fact." << std::endl;
@@ -125,13 +126,13 @@ void SRI_CLI::parse(string input) {
         //fact_params_all.erase(fact_params_all.begin());
         
         std::vector<string> fact_params;
-        for(int i = 1; i < fact_params_all.size(); i++)
-            fact_params.push_back(fact_params_all[i]);
+        for(auto it = fact_params_all.begin(); it != fact_params_all.end(); ++it){
+            fact_params.push_back(*it);
+        }
         
         engine->addFact(input, fact_params_all[0], fact_params);
         return;
-    }
-    else if(words[0] == "RULE") {
+    }else if(words[0] == "RULE") {
         vector<char> delim = {'(', ',', ')'};
         // Example of a valid rule input:
         //   RULE Parent($X,$Y):- OR Father($X,$Y) Mother($X,$Y)
@@ -157,7 +158,7 @@ void SRI_CLI::parse(string input) {
         
         vector<RFact> rfacts;
         
-        for(int i = 3; i < words.size(); i++) {
+        for(unsigned int i = 3; i < words.size(); i++) {
             vector<string> rfact_params = split(words[i], &delim);
             string rfact_name = rfact_params[0];
             rfact_params.erase(rfact_params.begin());
