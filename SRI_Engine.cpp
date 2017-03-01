@@ -217,23 +217,103 @@ vector<Fact*> SRI_Engine::queryRules(string r_name, vector<string> params) {
         for(int i = 0; i < r->params.size(); i++)
             rule_param_to_calling_param[r->params[i]] = params[i];
         
-        
-        for(int i = 0; i < r->facts.size(); i++) {
+        if(r->andtype) {
+            // This is an AND rule.
             
-            vector<string> factParams(r->facts[i].params); // Copy parameter format for editing
+            // First fact parameter format copy for editing
+            vector<string> factParams(r->facts[0].params);
             
-            // Iterate through each parameter and try to match it to a previous parameter.
             for(int j = 0; j < factParams.size(); j++) {
                 auto it = rule_param_to_calling_param.find(factParams[j]);
                 if(it != rule_param_to_calling_param.end())
                     factParams[j] = it->second;
             }
-            // factParams now contains the list of calling params where
-            // any previously defined param of the rule is replaced with
-            // a calling param, if available.
             
-            vector<Fact*> fact_results = queryFacts(r->facts[i].name, factParams);
-            results.insert(results.end(), fact_results.begin(), fact_results.end());
+            // Fact params is now the list of calling params where
+            // any previously defined param of the rule is replaced with a
+            // calling param, if available.
+            
+            
+            vector<Fact*> init_results = queryFacts(r->facts[0].name, factParams);
+            
+            // We want to call the next fact in the list, using results from
+            // this list only if applicable.
+            vector<string> secondFactParams(r->facts[1].params);
+            for(int j = 0; j < secondFactParams.size(); j++) {
+                auto it = rule_param_to_calling_param.find(secondFactParams[j]);
+                if(it != rule_param_to_calling_param.end())
+                    secondFactParams[j] = it->second;
+                
+                for(int k = 0; k < factParams.size(); k++)
+                    if(secondFactParams[j] == factParams[k])
+                        secondFactParams[j] = init_results[0]->vals[k];
+            }
+            
+            std::cout << "secondFactParams: ";
+            for(auto p : secondFactParams) { std::cout << p << ", "; }
+            std::cout << std::endl;
+            
+            
+            return init_results;
+            /*
+            // For each RFact in rule:
+            for(auto p : r->facts) {
+                map<string,string> rfact_param_to_calling_param;
+                
+                rfact_param_to_calling_param[
+                
+            }
+            
+            
+            // Get results for first fact -- no additional restrictions.
+            vector<Fact*> init_results = queryFacts(r->facts[i].name, factParams);
+            
+            for(int k = 0; k < init_results.size(); k++) {
+                vector<string> fParams(
+                
+                init_results[k]
+                
+                
+            }
+            
+            
+            for(int i = 0; i < r->facts.size(); i++) {
+                vector<string> factParams(r->facts[i].params); // Copy parameter format for editing
+                
+                // Iterate through each parameter and try to match it to a previous parameter.
+                for(int j = 0; j < factParams.size(); j++) {
+                    auto it = rule_param_to_calling_param.find(factParams[j]);
+                    if(it != rule_param_to_calling_param.end())
+                        factParams[j] = it->second;
+                }
+                // factParams now contains the list of calling params where
+                // any previously defined param of the rule is replaced with
+                // a calling param, if available.
+                
+                vector<Fact*> fact_results = queryFacts(r->facts[i].name, factParams);
+                
+                results.insert(results.end(), fact_results.begin(), fact_results.end());
+            }
+            */
+        }
+        else {
+            // This is an OR rule.
+            for(int i = 0; i < r->facts.size(); i++) {
+                vector<string> factParams(r->facts[i].params); // Copy parameter format for editing
+                
+                // Iterate through each parameter and try to match it to a previous parameter.
+                for(int j = 0; j < factParams.size(); j++) {
+                    auto it = rule_param_to_calling_param.find(factParams[j]);
+                    if(it != rule_param_to_calling_param.end())
+                        factParams[j] = it->second;
+                }
+                // factParams now contains the list of calling params where
+                // any previously defined param of the rule is replaced with
+                // a calling param, if available.
+                
+                vector<Fact*> fact_results = queryFacts(r->facts[i].name, factParams);
+                results.insert(results.end(), fact_results.begin(), fact_results.end());
+            }
         }
     }
     

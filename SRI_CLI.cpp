@@ -28,9 +28,13 @@ SRI_CLI::SRI_CLI() {
     parse("FACT Mother(Marry,John)");
     parse("FACT Father(Roger,Albert)");
     parse("FACT Mother(Marry,Albert)");
+    parse("FACT Father(Allen,Margret)");
+    parse("FACT Mother(Margret,Robert)");
+    parse("FACT Mother(Margret,Bob)");
     parse("RULE Parent($X,$Y):- OR Father($X,$Y) Mother($X,$Y)");
+    parse("RULE GrandFather($X,$Y):- AND Father($X,$Z) Parent($Z,$Y)");
     
-    engine->print();
+    //engine->print();
 }
 
 SRI_CLI::~SRI_CLI() {

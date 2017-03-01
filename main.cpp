@@ -8,14 +8,9 @@
 #include "main.h"
 
 int main(int argc, const char* argv[]) {
-
-    std::cout << "Program started.\n";
-    
+    std::cout << "Program started. Type 'q' to quit.\n";
     SRI_CLI cli;
     cli.start();
-    
-
-    
     std::cout << "Program ending.\n";
     return 0;
 }
