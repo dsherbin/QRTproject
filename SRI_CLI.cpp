@@ -107,6 +107,11 @@ void SRI_CLI::parse(string input) {
     // Using string literals because these commands are required and static.
     if(words[0] == "LOAD"){
         // TODO: Load an SRI file here.
+        std::ifstream in(words[1], std::ofstream::in);
+        for(std::string line; getline(in, line);){
+            parse(line);
+        }
+        in.close();
         return;
     }else if(words[0] == "DUMP"){
         // TODO: Dump an SRI file here.

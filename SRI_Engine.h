@@ -103,7 +103,6 @@ class SRI_Engine {
       bool checkFact(const Fact&, const vector<QueryParam>&, int);
     public:
       void addFact(string, string, vector<string>);
-      //void addRule(string, string, bool, vector<string>);
       void addRule(string, string, bool, vector<string>, vector<RFact>);
       vector<Fact*> queryFacts(string, vector<string>);
       vector<Fact*> queryRules(string, vector<string>);

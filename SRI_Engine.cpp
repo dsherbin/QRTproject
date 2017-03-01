@@ -266,7 +266,7 @@ vector<Fact*> SRI_Engine::query(string name, vector<string> params) {
 
 //dump the contents of the SRI_Engine to the file specified by filename
 void SRI_Engine::dump(string filename){
-    std::ofstream out(filename);
+    std::ofstream out(filename, std::ofstream::out);
 
     //dump facts
     for(auto it = facts.begin(); it != facts.end(); ++it){
