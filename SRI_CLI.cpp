@@ -91,11 +91,11 @@ void SRI_CLI::parse(string input) {
     std::vector<string> words = split(input);
     
     // DEBUG: Print split word input.
-    cout << "[DEBUG] INPUT READ: ";
-    for(auto i : words) {
-        cout << i << ", ";
-    }
-    cout << endl;
+    //cout << "[DEBUG] INPUT READ: ";
+    //for(auto i : words) {
+    //    cout << i << ", ";
+    //}
+    //cout << endl;
     
     
     if(words.size() < 1) {
@@ -193,7 +193,31 @@ void SRI_CLI::parse(string input) {
         
         //engine->queryFacts(name, query_params);
     
-        engine->query(name, query_params);
+        vector<Fact*> results = engine->query(name, query_params);
+        
+        // Set output formatting of query params.
+        int nqp_total = 0;
+        for(int i = 0; i < query_params.size(); i++) {
+            if(query_params[i][0] == '$') {
+                query_params[i] = query_params[i].substr(1);
+                nqp_total++;
+            }
+            else
+                query_params[i] = "";
+        }
+        
+        // Print
+        for(auto i : results) {
+            int nqp = nqp_total;
+            for(int j = 0; j < query_params.size(); j++) {
+                if(query_params[j] != "") {
+                    cout << query_params[j] << ":" << i->vals[j];
+                    if(--nqp)
+                        cout << ", ";
+                }
+            }
+            cout << endl;
+        }
     
         return;
     }

@@ -40,23 +40,18 @@ struct QueryParam {
 struct Fact {
     // Note: might want to add the name here, even though its stored in the engine as the index.
     string def; // The actual string used to define this fact, for processing efficiency. WIP
+    string name; // Stored for result usage
     vector<string> vals;
-    Fact(string d, vector<string> v) {
+    Fact(string n, string d, vector<string> v) {
+        name = n;
         def = d;
         vals = v;
     };
 };
-//Fact::Fact(vector<string> v) {
-//    vals = v;
-//}
 
 
-// ----------------------------
-// This section is a mess from me trying to figure out rule inferrence.
-// ----------------------------
-
-// An RFact is a Fact as defined by a rule. It has to store a name, and the
-// params as defined by the rule (as opposed to those defined by the fact.)
+// An RFact is a Fact as defined by a Rule. It has to store a name, and the
+// params as defined by the Rule.
 struct RFact {
     string name;
     vector<string> params;
@@ -66,11 +61,11 @@ struct RFact {
     }
 };
 
+
 // A rule is declared by the user through the input:
 //   RULENAME($P1,$P2...):- AND|OR FACT1($P?,$P?...) FACT2($P?, $P?...) ...
 struct Rule {
-    //string format; // Format of given parameters
-    string def; // Actual string used to define this rule, for processing efficiency. WIP
+    string def; // Actual string used to define this rule, for processing efficiency.
     
     vector<string> params; // Params after RULENAME, i.e. [$X, $Y]
     
@@ -79,18 +74,12 @@ struct Rule {
     vector<RFact> facts;
     
     Rule(string d, bool t, vector<string> p, vector<RFact> f) {
-    //string f, bool t, vector<string> facts) {
-        //format = f;
         def = d;
         andtype = t;
         params = p;
         facts = f;
-        //fact_names = facts;
     };
 };
-// ----------------------------
-// end mess
-// ----------------------------
 
 
 // Note: it might make more sense in terms of code structure to
