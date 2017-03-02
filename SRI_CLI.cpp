@@ -195,9 +195,10 @@ void SRI_CLI::parse(string input) {
         vector<string> query_params = split(words[1].substr(name_end), &delim);
         //for(auto i : query_params) std::cout << i << ",";
         
-        //engine->queryFacts(name, query_params);
-    
+        
         vector<Fact*> results = engine->query(name, query_params);
+
+        
         
         // Set output formatting of query params.
         int nqp_total = 0;
@@ -222,7 +223,6 @@ void SRI_CLI::parse(string input) {
             }
             cout << endl;
         }
-    
         return;
     }
     else if(words[0] == "DROP")
