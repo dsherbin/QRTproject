@@ -79,6 +79,19 @@ struct Rule {
         params = p;
         facts = f;
     };
+    /*
+    Rule(string n, bool t, vector<string> p, vector<RFact> f) {
+        def = "RULE " + n + "(";
+        for(int i = 0; i < p.size(); i++) {
+            def += p;
+            if(i < p.size()-1)
+                def += ",";
+        }
+        def += "):- ";
+        for
+        
+    };
+    */
 };
 
 
@@ -94,7 +107,7 @@ class SRI_Engine {
       //void addRule(string, string, bool, vector<string>);
       void addRule(string, string, bool, vector<string>, vector<RFact>);
       vector<Fact*> queryFacts(string, vector<string>);
-      vector<Fact*> queryRules(string, vector<string>);
+      vector<Fact*> queryRules(string, vector<string>, string);
       vector<Fact*> query(string, vector<string>);
       void print();
 
