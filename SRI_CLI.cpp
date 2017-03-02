@@ -13,6 +13,7 @@ SRI_CLI::SRI_CLI() {
     exit = false;
     
     // pre-populate with example commands
+    /*
     parse("FACT Father(Roger,John)");
     parse("FACT Mother(Marry,John)");
     parse("FACT Father(Roger,Albert)");
@@ -22,6 +23,7 @@ SRI_CLI::SRI_CLI() {
     parse("FACT Mother(Margret,Bob)");
     parse("RULE Parent($X,$Y):- OR Father($X,$Y) Mother($X,$Y)");
     parse("RULE GrandFather($X,$Y):- AND Father($X,$Z) Parent($Z,$Y)");
+    */
 }
 
 SRI_CLI::~SRI_CLI() {
