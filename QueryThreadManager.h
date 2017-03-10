@@ -19,17 +19,18 @@ using std::vector;
 
 class QueryThreadManager {
     private:
-        vector<QueryThread*> qt;
-        //vector<Fact> results;
-        map<string, vector<Fact>>* kb;
-        map<string, vector<Rule>>* rb;
-        pthread_mutex_t cout_mtx;
-        pthread_mutex_t write_mtx;
+        vector<QueryThread*> qt;        // List of threads.
+        vector<Fact>* results;          // Shared result vector.
+        map<string, vector<Fact>>* kb;  // Pointer to knowledge base.
+        map<string, vector<Rule>>* rb;  // Pointer to rule base.
+        pthread_mutex_t cout_mtx;       // Mutex for cout writing.
+        pthread_mutex_t write_mtx;      // Mutex for result set writing.
     public:
         QueryThreadManager(map<string, vector<Fact>>*, map<string, vector<Rule>>*);
+        void setup();
         void addThread(string, vector<string>, int);
         void start();
-        void barrier();
+        vector<Fact>* barrier();
         ~QueryThreadManager();
 };
 

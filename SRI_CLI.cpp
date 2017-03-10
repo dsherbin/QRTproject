@@ -195,11 +195,14 @@ void SRI_CLI::rule(std::vector<string> &words, string &input){
     string raw_params = words[1].substr(name_end, (params_end - name_end) + 1);
     vector<string> params = split(raw_params, &delim);
 
-    bool type;
+    //bool type;
+    int type;
     if(words[2] == "AND")
-        type = true;
-    if(words[2] == "OR")
-        type = false;
+        type = 1;//type = true;
+    else // OR
+        type = 2;
+    //if(words[2] == "OR")
+    //    type = 2;//type = false;
 
     vector<RFact> rfacts;
 

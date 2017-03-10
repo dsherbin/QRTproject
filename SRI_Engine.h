@@ -43,7 +43,7 @@ class SRI_Engine {
     public:
       SRI_Engine();
       void addFact(string, string, vector<string>);
-      void addRule(string, string, bool, vector<string>, vector<RFact>);
+      void addRule(string, string, int, vector<string>, vector<RFact>);
       bool containsFact(string &name);
       bool containsRule(string &name);
       void dropRule(string &name);

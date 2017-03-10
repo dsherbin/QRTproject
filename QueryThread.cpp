@@ -9,19 +9,19 @@
 
 QueryThread::QueryThread(map<string, vector<Fact>>* f,
         map<string, vector<Rule>>* r, string n, vector<string> p, int id,
-        pthread_mutex_t* cout_m, pthread_mutex_t* write_m) {
+        pthread_mutex_t* cout_m, pthread_mutex_t* write_m, vector<Fact>* results) {
     kb = f;
     rb = r;
     name = n;
     params = p;
     tid = id;
-    res = new vector<Fact>();
+    res = results;
     cout_mtx = cout_m;
     write_mtx = write_m;
 }
 
 QueryThread::~QueryThread() {
-    delete res;
+    //delete res;
 }
 
 void* QueryThread::threadMainBody(void* arg) {
@@ -31,23 +31,26 @@ void* QueryThread::threadMainBody(void* arg) {
     
     vector<Fact> results;
     
+    
     auto fi = kb->find(name);
     if(fi != kb->end())
         results = queryFacts(name, params);
-        //return queryFacts(name, params);
     
     auto ri = rb->find(name);
     if(ri != rb->end())
-        //res = queryFacts(name, params);
-        results = queryFacts(name, params); // CHANGE TO RULES BEFORE MERGE
-        //return queryRules(name, params);
+        results = queryFacts(name, params); // CHANGE TO QUERYRULES BEFORE FINAL COMMIT
     
-    //res->insert(res->end(), results.begin(), results.end());
+    // Write results to shared result vector
+    pthread_mutex_lock(write_mtx);
+    res->insert(res->end(), results.begin(), results.end());
+    pthread_mutex_unlock(write_mtx);
     
-    //std::cout << "Couldn't find a match in facts or rules.\n";
+    
+    
     pthread_mutex_lock(cout_mtx);
     std::cout << "thread " << tid << " ending\n";
     pthread_mutex_unlock(cout_mtx);
+    
     return nullptr;
 }
 
