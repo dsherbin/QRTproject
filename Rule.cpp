@@ -19,4 +19,4 @@ Rule::Rule(string d, bool t, vector<string> p, vector<RFact> f) {
     andtype = t;
     params = p;
     facts = f;
-};
+}

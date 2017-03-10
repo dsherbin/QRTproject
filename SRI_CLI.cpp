@@ -11,19 +11,6 @@
 SRI_CLI::SRI_CLI() {
     engine = new SRI_Engine;
     exit = false;
-    
-    // pre-populate with example commands
-    /*
-    parse("FACT Father(Roger,John)");
-    parse("FACT Mother(Marry,John)");
-    parse("FACT Father(Roger,Albert)");
-    parse("FACT Mother(Marry,Albert)");
-    parse("FACT Father(Allen,Margret)");
-    parse("FACT Mother(Margret,Robert)");
-    parse("FACT Mother(Margret,Bob)");
-    parse("RULE Parent($X,$Y):- OR Father($X,$Y) Mother($X,$Y)");
-    parse("RULE GrandFather($X,$Y):- AND Father($X,$Z) Parent($Z,$Y)");
-    */
 }
 
 SRI_CLI::~SRI_CLI() {
@@ -83,14 +70,6 @@ std::vector<string> SRI_CLI::split(string s, const vector<char>* delim = NULL) {
 void SRI_CLI::parse(string input) {
     std::vector<string> words = split(input);
     
-    // DEBUG: Print split word input.
-    //cout << "[DEBUG] INPUT READ: ";
-    //for(auto i : words) {
-    //    cout << i << ", ";
-    //}
-    //cout << endl;
-    
-    
     if(words.size() < 1) {
         std::cout << "Invalid command." << std::endl;
         return;
@@ -142,11 +121,7 @@ void SRI_CLI::parse(string input) {
         string name = words[1].substr(0, name_end);
         int params_end = words[1].find(")");
         string raw_params = words[1].substr(name_end, (params_end - name_end) + 1);
-        //std::cout << "raw_params: " << raw_params << std::endl;
         vector<string> params = split(raw_params, &delim);
-        //std::cout << "params: ";
-        //for(auto i : params) std::cout << i << ",";
-        //std::cout << std::endl;
         
         bool type;
         if(words[2] == "AND")
@@ -162,9 +137,7 @@ void SRI_CLI::parse(string input) {
             rfact_params.erase(rfact_params.begin());
             
             rfacts.push_back(RFact(rfact_name, rfact_params));
-            //std::cout << "rfact_name for word[" << i << "]: " << rfact_name << std::endl;
-            //for(auto j : rfact_params)
-            //    std::cout << "rfact_params from word[" << i << "]: " << j << std::endl;
+            
         }
         
         engine->addRule(input, name, type, params, rfacts);
@@ -178,13 +151,12 @@ void SRI_CLI::parse(string input) {
         
         vector<char> delim = {'(',')', ','};
         vector<string> query_params = split(words[1].substr(name_end), &delim);
-        //for(auto i : query_params) std::cout << i << ",";
         
-        vector<Fact> results = engine->query(name, query_params);
+        vector<Fact*> results = engine->query(name, query_params);
         
         // Set output formatting of query params.
         int nqp_total = 0;
-        for(int i = 0; i < query_params.size(); i++) {
+        for(unsigned int i = 0; i < query_params.size(); i++) {
             if(query_params[i][0] == '$') {
                 query_params[i] = query_params[i].substr(1);
                 nqp_total++;
@@ -194,11 +166,11 @@ void SRI_CLI::parse(string input) {
         }
         
         // Print
-        for(int i = 0; i < results.size(); i++) {
+        for(unsigned int i = 0; i < results.size(); i++) {
             int nqp = nqp_total;
-            for(int j = 0; j < query_params.size(); j++) {
+            for(unsigned int j = 0; j < query_params.size(); j++) {
                 if(query_params[j] != "") {
-                    cout << query_params[j] << ":" << results[i].vals[j];
+                    cout << query_params[j] << ":" << results[i]->vals[j];
                     if(--nqp)
                         cout << ", ";
                 }
@@ -209,17 +181,17 @@ void SRI_CLI::parse(string input) {
         if(words.size() == 3) {
             string set_name = words[2];
             // This result is to be saved with the given name.
-            for(int i = 0; i < results.size(); i++) {
-                results[i].name = set_name;
+            for(unsigned int i = 0; i < results.size(); i++) {
+                results[i]->name = set_name;
                 string d = "FACT " + set_name + "(";
-                for(int j = 0; j < results[i].vals.size(); j++) {
-                    d += results[i].vals[j];
-                    if(j < results[i].vals.size() - 1)
+                for(unsigned int j = 0; j < results[i]->vals.size(); j++) {
+                    d += results[i]->vals[j];
+                    if(j < results[i]->vals.size() - 1)
                         d += ",";
                 }
                 d += ")";
-                results[i].def = d;
-                engine->addFact(results[i]);
+                results[i]->def = d;
+                engine->addFact(*results[i]);
             }
         }
         

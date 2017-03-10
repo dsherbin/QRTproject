@@ -29,19 +29,13 @@ class SRI_Engine {
       bool checkFact(const Fact&, const vector<QueryParam>&, int);
     public:
       void addFact(string, string, vector<string>);
-<<<<<<< HEAD
       void addRule(string, string, bool, vector<string>, vector<RFact>);
       vector<Fact*> queryFacts(string, vector<string>);
       vector<Fact*> queryRules(string, vector<string>);
+      vector<Fact*> queryRules(string, vector<string>, string);
       vector<Fact*> query(string, vector<string>);
       void dump(string filename);
-=======
       void addFact(Fact);
-      void addRule(string, string, bool, vector<string>, vector<RFact>);
-      vector<Fact> queryFacts(string, vector<string>);
-      vector<Fact> queryRules(string, vector<string>, string);
-      vector<Fact> query(string, vector<string>);
->>>>>>> origin/master
       void print();
 
 };
