@@ -6,7 +6,7 @@
 //  Function definitions for the QueryThreadManager class.
 //  These are almost entirely copied from Dr. Sobh's ThreadManager example.
 
-#include "QueryThread.h"
+#include "QueryThreadManager.h"
 
 QueryThreadManager::QueryThreadManager() {
     qt = vector<QueryThread*>();

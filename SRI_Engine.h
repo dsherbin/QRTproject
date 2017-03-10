@@ -29,6 +29,7 @@ using std::map;
 
 #include "Thread.h"
 #include "QueryThread.h"
+#include "QueryThreadManager.h"
 
 class SRI_Engine {
     private:
@@ -37,7 +38,8 @@ class SRI_Engine {
       bool checkFact(const Fact&, const vector<QueryParam>&, int);
     
       QueryThreadManager qtm = QueryThreadManager();
-      std::mutex cout_mtx;
+      pthread_mutex_t cout_mtx;
+      //std::mutex cout_mtx;
     public:
       SRI_Engine();
       void addFact(string, string, vector<string>);

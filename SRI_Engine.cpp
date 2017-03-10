@@ -8,7 +8,9 @@
 #include "SRI_Engine.h"
 
 // Default constructor
-SRI_Engine::SRI_Engine() {}
+SRI_Engine::SRI_Engine() {
+    pthread_mutex_init(&cout_mtx, NULL);
+}
 
 // Destructor
 SRI_Engine::~SRI_Engine() {}
@@ -86,8 +88,8 @@ void SRI_Engine::dropRule(string &name){
 //      true if the fact meets the requirements defined by the QueryParams, false otherwise.
 bool SRI_Engine::checkFact(const Fact& f, const vector<QueryParam>& qp, int np) {
     if(f.vals.size() != (unsigned int)np) {
-        std::cout << "vals.size: " << f.vals.size() << std::endl;
-        std::cout << "[DEBUG]: Fact doesn't match because the number of parameters doesn't match the number of values.\n";
+        //std::cout << "vals.size: " << f.vals.size() << std::endl;
+        //std::cout << "[DEBUG]: Fact doesn't match because the number of parameters doesn't match the number of values.\n";
         return false; // Check that lengths match.
     }
     
@@ -284,7 +286,9 @@ vector<Fact> SRI_Engine::queryRules(string r_name, vector<string> params, string
 vector<Fact> SRI_Engine::query(string name, vector<string> params) {
     std::cout << "querying...\n";
     
-    qtm.addThread(new QueryThread(&facts, &rules, name, params, 1));
+    for(unsigned int i = 0; i < 10; i++) {
+        qtm.addThread(new QueryThread(&facts, &rules, name, params, i, &cout_mtx));
+    }
     qtm.start();
     qtm.barrier();
     

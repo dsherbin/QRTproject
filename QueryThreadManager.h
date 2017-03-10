@@ -11,6 +11,7 @@
 #include <vector>
 #include <iostream> // For console debugging
 #include "Thread.h"
+#include "QueryThread.h"
 
 using std::vector;
 
