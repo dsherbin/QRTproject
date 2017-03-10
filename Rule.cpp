@@ -14,9 +14,9 @@ RFact::RFact(string n, vector<string> p) {
 }
 
 // Constructor
-Rule::Rule(string d, bool t, vector<string> p, vector<RFact> f) {
+Rule::Rule(string d, int op, vector<string> p, vector<RFact> f) {
     def = d;
-    andtype = t;
+    operation = op;
     params = p;
     facts = f;
 }

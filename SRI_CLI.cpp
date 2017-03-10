@@ -151,6 +151,16 @@ void SRI_CLI::rule(std::vector<string> &words, string &input){
     engine->addRule(input, name, type, params, rfacts);
 }
 
+void SRI_CLI::drop(std::vector<string> &words){
+    if(engine->containsRule(words[1])){
+        engine->dropRule(words[1]);
+    }
+
+    if(engine->containsFact(words[1])){
+        engine->dropFact(words[1]);
+    }
+}
+
 // Parse the given input string.
 void SRI_CLI::parse(string input) {
     std::vector<string> words = split(input);
@@ -160,28 +170,22 @@ void SRI_CLI::parse(string input) {
         return;
     }
     
-    // TODO: Split these into functions.
     // Using string literals because these commands are required and static.
     if(words[0] == "LOAD"){
         load(words[1]);
     }else if(words[0] == "DUMP"){
         engine->dump(words[1]);
-    }else if(words[0] == "FACT") {
+    }else if(words[0] == "FACT"){
         fact(words, input);
-    }else if(words[0] == "RULE") {
+    }else if(words[0] == "RULE"){
         rule(words, input);
-    }
-    else if(words[0] == "INFERENCE") {
+    }else if(words[0] == "INFERENCE"){
         inference(words);
-    }
-    else if(words[0] == "DROP")
-        // TODO: Delete a rule or fact.
-        return;
-    else if(words[0] == "PRINT") {
-        // This is a debug command
+    }else if(words[0] == "DROP"){
+        drop(words);
+    }else if(words[0] == "PRINT"){
         engine->print();
-    }
-    else if(words[0] == "q" || words[0] == "quit" || words[0] == "exit") {
+    }else if(words[0] == "q" || words[0] == "quit" || words[0] == "exit") {
         exit = true;
     }else{
         std::cout << "Unrecognized command." << std::endl;

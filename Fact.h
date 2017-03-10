@@ -10,15 +10,13 @@
 
 #include <vector>
 #include <string>
-using std::vector;
-using std::string;
 
 struct Fact {
-    string def; // The actual string used to define this fact, for processing efficiency. WIP
-    string name; // Stored for result usage
-    vector<string> vals;
+    std::string def; // The actual string used to define this fact, for processing efficiency. WIP
+    std::string name; // Stored for result usage
+    std::vector<std::string> vals;
     
-    Fact(string, string, vector<string>);
+    Fact(std::string, std::string, std::vector<std::string>);
 };
 
 #endif

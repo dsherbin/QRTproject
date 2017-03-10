@@ -27,14 +27,15 @@ struct RFact {
 //   RULENAME($P1,$P2...):- AND|OR FACT1($P?,$P?...) FACT2($P?, $P?...) ...
 struct Rule {
     string def; // Actual string used to define this rule, for processing efficiency.
-    
     vector<string> params; // Params after RULENAME, i.e. [$X, $Y]
-    
-    // TODO: Make this an enum or something else more intuitive?
-    bool andtype; // AND or OR
+    int operation;
     vector<RFact> facts;
+
+    //constants
+    static const int AND = 1;
+    static const int OR = 2;
     
-    Rule(string, bool, vector<string>, vector<RFact>);
+    Rule(string, int, vector<string>, vector<RFact>);
 };
 
 #endif

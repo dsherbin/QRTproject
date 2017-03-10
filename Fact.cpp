@@ -8,7 +8,7 @@
 #include "Fact.h"
 
 // Constructor
-Fact::Fact(string n, string d, vector<string> v) {
+Fact::Fact(std::string n, std::string d, std::vector<std::string> v) {
     name = n;
     def = d;
     vals = v;

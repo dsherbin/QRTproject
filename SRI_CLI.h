@@ -30,6 +30,7 @@ class SRI_CLI {
       void inference(vector<string> &words);
       void fact(vector<string> &words, string &input);
       void rule(vector<string> &words, string &input);
+      void drop(vector<string> &words);
       ~SRI_CLI();
 };
 

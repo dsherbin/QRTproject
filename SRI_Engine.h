@@ -30,6 +30,10 @@ class SRI_Engine {
     public:
       void addFact(string, string, vector<string>);
       void addRule(string, string, bool, vector<string>, vector<RFact>);
+      bool containsFact(string &name);
+      bool containsRule(string &name);
+      void dropRule(string &name);
+      void dropFact(string &name);
       vector<Fact*> queryFacts(string, vector<string>);
       vector<Fact*> queryRules(string, vector<string>);
       vector<Fact*> queryRules(string, vector<string>, string);

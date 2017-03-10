@@ -51,6 +51,22 @@ void SRI_Engine::addRule(string def, string name, bool type, vector<string> para
     rules[name].push_back(Rule(def, type, params, rfacts));
 }
 
+bool SRI_Engine::containsFact(string &name){
+    return (facts.find(name) != facts.end());
+}
+
+bool SRI_Engine::containsRule(string &name){
+    return (rules.find(name) != rules.end());
+}
+
+void SRI_Engine::dropFact(string &name){
+    facts.erase(name);
+}
+
+void SRI_Engine::dropRule(string &name){
+    rules.erase(name);
+}
+
 
 // Return true if the given Fact meets the requirements of the given QueryParam list.
 // IMPORTANT: this function treats repeat variable situations, such as ($A,$A) in a specific manner:
@@ -139,12 +155,12 @@ vector<Fact*> SRI_Engine::queryFacts(string f_name, vector<string> params) {
                 break;
             }
         }
-        if(!dupe) qParams.push_back(QueryParam(params[i], i));
+        if(!dupe){
+            qParams.push_back(QueryParam(params[i], i));
+        }
     }
     
     for(unsigned int i = 0; i < facts[f_name].size(); i++) {
-        
-    
         if(checkFact(facts[f_name][i], qParams, nParams)) {
             results.push_back(& (facts[f_name][i]));
         }
@@ -170,9 +186,7 @@ vector<Fact*> SRI_Engine::queryRules(string r_name, vector<string> params, strin
     vector<Rule>* rl = &(rules[r_name]);
     
     for(vector<Rule>::iterator ri = rl->begin(); ri != rl->end(); ri++) {
-        
         Rule* r = &(*ri);
-        
         if(!r) { std::cout << "No rule by that name.\n"; return results; }
 
 
@@ -184,12 +198,9 @@ vector<Fact*> SRI_Engine::queryRules(string r_name, vector<string> params, strin
         map<string,string> rule_param_to_calling_param;
         for(unsigned int i = 0; i < r->params.size(); i++) {
             rule_param_to_calling_param[r->params[i]] = params[i];
-            //std::cout << r->params[i] << " = " << params[i] << std::endl;
         }
         
-        if(r->andtype) {
-            // This is an AND rule.
-            
+        if(r->operation == Rule::AND) {
             // First fact parameter format copy for editing
             vector<string> factParams(r->facts[0].params);
             
@@ -202,14 +213,11 @@ vector<Fact*> SRI_Engine::queryRules(string r_name, vector<string> params, strin
             // Fact params is now the list of calling params where
             // any previously defined param of the rule is replaced with a
             // calling param, if available.
-            
-            
             vector<Fact*> init_results = query(r->facts[0].name, factParams);
             
             // We want to call the next fact in the list, using results from
             // this list only if applicable.
             for(unsigned int fr = 0; fr < init_results.size(); fr++) {
-            
                 vector<string> secondFactParams(r->facts[1].params);
                 for(unsigned int j = 0; j < secondFactParams.size(); j++) {
                     auto it = rule_param_to_calling_param.find(secondFactParams[j]);
@@ -232,7 +240,6 @@ vector<Fact*> SRI_Engine::queryRules(string r_name, vector<string> params, strin
                         final_param_map[secondFactParams[j]] = second_results[sr]->vals[j];
                     }
                     
-                    
                     vector<string> newvals;
                     for(unsigned int j = 0; j < params.size(); j++) {
                         auto it = final_param_map.find(params[j]);
@@ -243,9 +250,7 @@ vector<Fact*> SRI_Engine::queryRules(string r_name, vector<string> params, strin
                     results.push_back(new Fact(res_name, "custom", newvals));
                 }
             }
-        }
-        else {
-            // This is an OR rule.
+        }else if(r->operation == Rule::OR) {
             for(unsigned int i = 0; i < r->facts.size(); i++) {
                 vector<string> factParams(r->facts[i].params); // Copy parameter format for editing
                 
@@ -275,7 +280,6 @@ vector<Fact*> SRI_Engine::queryRules(string r_name, vector<string> params, strin
 // Assumes no duplicate names exist between rules and facts.
 // In this situation, it will only return the first entry found (the queryfact results).
 vector<Fact*> SRI_Engine::query(string name, vector<string> params) {
-    vector<Fact*> results;
     auto fi = facts.find(name);
     if(fi != facts.end()){
         return queryFacts(name, params);
@@ -287,7 +291,7 @@ vector<Fact*> SRI_Engine::query(string name, vector<string> params) {
     }
     
     std::cout << "Couldn't find a match in facts or rules.\n";
-    return results; // return empty list.
+    return vector<Fact*>(); // return empty list.
 }
 
 
