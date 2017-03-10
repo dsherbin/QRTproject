@@ -12,16 +12,22 @@
 #include <iostream> // For console debugging
 #include "Thread.h"
 #include "QueryThread.h"
+#include "Rule.h"
+#include "Fact.h"
 
 using std::vector;
 
 class QueryThreadManager {
     private:
         vector<QueryThread*> qt;
-        vector<Fact> results;
+        //vector<Fact> results;
+        map<string, vector<Fact>>* kb;
+        map<string, vector<Rule>>* rb;
+        pthread_mutex_t cout_mtx;
+        pthread_mutex_t write_mtx;
     public:
-        QueryThreadManager();
-        void addThread(QueryThread* p_thread);
+        QueryThreadManager(map<string, vector<Fact>>*, map<string, vector<Rule>>*);
+        void addThread(string, vector<string>, int);
         void start();
         void barrier();
         ~QueryThreadManager();

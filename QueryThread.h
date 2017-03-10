@@ -33,8 +33,9 @@ class QueryThread : public Thread {
       vector<string> params;
       int tid;
       pthread_mutex_t* cout_mtx;
+      pthread_mutex_t* write_mtx;
     public:
-      QueryThread(map<string, vector<Fact>>*, map<string, vector<Rule>>*, string, vector<string>, int, pthread_mutex_t*);
+      QueryThread(map<string, vector<Fact>>*, map<string, vector<Rule>>*, string, vector<string>, int, pthread_mutex_t*, pthread_mutex_t*);
       virtual void* threadMainBody(void*);
       vector<Fact> queryFacts(string, vector<string>);
       bool checkFact(const Fact&, const vector<QueryParam>&, int);

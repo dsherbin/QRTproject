@@ -37,8 +37,8 @@ class SRI_Engine {
       map<string, vector<Rule>> rules;
       bool checkFact(const Fact&, const vector<QueryParam>&, int);
     
-      QueryThreadManager qtm = QueryThreadManager();
-      pthread_mutex_t cout_mtx;
+      QueryThreadManager qtm;
+      //pthread_mutex_t cout_mtx;
       //std::mutex cout_mtx;
     public:
       SRI_Engine();

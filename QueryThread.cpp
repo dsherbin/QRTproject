@@ -9,7 +9,7 @@
 
 QueryThread::QueryThread(map<string, vector<Fact>>* f,
         map<string, vector<Rule>>* r, string n, vector<string> p, int id,
-        pthread_mutex_t* cout_m) {
+        pthread_mutex_t* cout_m, pthread_mutex_t* write_m) {
     kb = f;
     rb = r;
     name = n;
@@ -17,6 +17,7 @@ QueryThread::QueryThread(map<string, vector<Fact>>* f,
     tid = id;
     res = new vector<Fact>();
     cout_mtx = cout_m;
+    write_mtx = write_m;
 }
 
 QueryThread::~QueryThread() {

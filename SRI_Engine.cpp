@@ -8,8 +8,9 @@
 #include "SRI_Engine.h"
 
 // Default constructor
-SRI_Engine::SRI_Engine() {
-    pthread_mutex_init(&cout_mtx, NULL);
+SRI_Engine::SRI_Engine() : qtm(&facts, &rules) {
+    //pthread_mutex_init(&cout_mtx, NULL);
+    //qtm = QueryThreadManager(&facts, &rules);
 }
 
 // Destructor
@@ -287,7 +288,8 @@ vector<Fact> SRI_Engine::query(string name, vector<string> params) {
     std::cout << "querying...\n";
     
     for(unsigned int i = 0; i < 10; i++) {
-        qtm.addThread(new QueryThread(&facts, &rules, name, params, i, &cout_mtx));
+        //qtm.addThread(new QueryThread(&facts, &rules, name, params, i, &cout_mtx));
+        qtm.addThread(name, params, i);
     }
     qtm.start();
     qtm.barrier();
