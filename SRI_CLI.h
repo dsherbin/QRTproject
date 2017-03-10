@@ -26,6 +26,10 @@ class SRI_CLI {
       SRI_CLI();
       void start();
       void parse(string);
+      void load(const string filename);
+      void inference(vector<string> &words);
+      void fact(vector<string> &words, string &input);
+      void rule(vector<string> &words, string &input);
       ~SRI_CLI();
 };
 
