@@ -22,25 +22,42 @@ using std::map;
 #include "Fact.h"
 #include "Rule.h"
 
+// For C++11 style threads:
+//#include <thread>
+//using std::thread;
+//#include <mutex>
+
+#include "Thread.h"
+#include "QueryThread.h"
+
 class SRI_Engine {
     private:
       map<string, vector<Fact>> facts;
       map<string, vector<Rule>> rules;
       bool checkFact(const Fact&, const vector<QueryParam>&, int);
+    
+      QueryThreadManager qtm = QueryThreadManager();
+      std::mutex cout_mtx;
     public:
+      SRI_Engine();
       void addFact(string, string, vector<string>);
       void addRule(string, string, bool, vector<string>, vector<RFact>);
       bool containsFact(string &name);
       bool containsRule(string &name);
       void dropRule(string &name);
       void dropFact(string &name);
-      vector<Fact*> queryFacts(string, vector<string>);
-      vector<Fact*> queryRules(string, vector<string>);
-      vector<Fact*> queryRules(string, vector<string>, string);
-      vector<Fact*> query(string, vector<string>);
+      vector<Fact> queryFacts(string, vector<string>);
+      //vector<Fact> queryRules(string, vector<string>);
+      vector<Fact> queryRules(string, vector<string>, string);
+      vector<Fact> query(string, vector<string>);
       void dump(string filename);
       void addFact(Fact);
       void print();
+      ~SRI_Engine();
+    
+      //C++11 thread test
+      //vector<Fact> beginQuery(string, vector<string>);
+      //void threadedQuery(string, vector<string>, int, vector<Fact>&);//string, vector<string>, int, vector<Fact>&);
 
 };
 

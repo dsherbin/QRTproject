@@ -1,7 +1,7 @@
-PARAMS= -std=c++11
+PARAMS= -std=c++11 -Wall
 
-hw4: main.o SRI_CLI.o SRI_Engine.o Rule.o Fact.o QueryParam.o
-	g++ main.o SRI_CLI.o SRI_Engine.o Rule.o Fact.o QueryParam.o -o hw4
+hw4: main.o SRI_CLI.o SRI_Engine.o Rule.o Fact.o QueryParam.o Thread.o QueryThread.o QueryThreadManager.o
+	g++ main.o SRI_CLI.o SRI_Engine.o Rule.o Fact.o QueryParam.o Thread.o QueryThread.o QueryThreadManager.o -o hw4
 
 main.o: main.cpp main.h
 	g++ -c main.cpp $(PARAMS) -o main.o
@@ -20,6 +20,15 @@ Fact.o: Fact.cpp Fact.h
 
 QueryParam.o: QueryParam.cpp QueryParam.h
 	g++ -c QueryParam.cpp $(PARAMS) -o QueryParam.o
+
+Thread.o: Thread.cpp Thread.h
+	g++ -c Thread.cpp $(PARAMS) -o Thread.o
+
+QueryThread.o: QueryThread.cpp QueryThread.h
+	g++ -c QueryThread.cpp $(PARAMS) -o QueryThread.o
+
+QueryThreadManager.o: QueryThreadManager.cpp QueryThreadManager.h
+	g++ -c QueryThreadManager.cpp $(PARAMS) -o QueryThreadManager.o
 
 clean:
 	rm -f *.o hw4
