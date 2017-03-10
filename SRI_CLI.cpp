@@ -6,6 +6,9 @@
 //  Function definitions for the SRI command line interface.
 
 #include "SRI_CLI.h"
+#include <iterator>
+#include <sstream>
+#include <algorithm>
 
 // Constructor
 SRI_CLI::SRI_CLI() {
@@ -29,41 +32,11 @@ void SRI_CLI::start() {
 
 // Split the given string into a vector of substrings.
 // Splits on whitespace by default, or by deliminating character if provided.
-std::vector<string> SRI_CLI::split(string s, const vector<char>* delim = NULL) {
-    std::vector<string> ws;
-    string c = "";
-    if(delim) {
-        bool skip = false;
-        for(auto i : s) {
-            for(auto j : *delim)
-                if(i == j) {
-                    if(c != "") {
-                        ws.push_back(c);
-                        c = "";
-                    }
-                    skip = true;
-                    break;
-                }
-            if(skip) {
-                skip = false;
-                continue;
-            }
-            c += i;
-        }
-    }
-    else {
-        for(auto i : s)
-            if(!isspace(i))
-                c += i;
-            else if(c != "") {
-                ws.push_back(c);
-                c = "";
-            }
-    }
-    
-    if(c != "")
-        ws.push_back(c);
-    return ws;
+std::vector<string> SRI_CLI::split(string s, const vector<char> * delim = NULL){
+    std::istringstream iss(s);
+    std::vector<string> words = {   std::istream_iterator<string>{iss},
+                                    std::istream_iterator<string>{} };
+    return words;
 }
 
 // Parse the given input string.

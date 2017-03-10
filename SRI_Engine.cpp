@@ -21,7 +21,6 @@ void SRI_Engine::addFact(std::string def, string name, vector<string> params) {
         if(i.vals.size() != params.size()) continue; // Not a match.
         bool entries_match = true;
         for(unsigned int j = 0; j < i.vals.size(); j++) {
-            //std::cout << "comparing " << params[j] << " and " << i.vals[j] << std::endl;
             if(params[j] != i.vals[j]) {
                 entries_match = false; // Not a match.
                 break;
@@ -76,6 +75,7 @@ bool SRI_Engine::checkFact(const Fact& f, const vector<QueryParam>& qp, int np) 
     for(unsigned int i = 0; i < f.vals.size(); i++) {
         std::cout << "[DEBUG]: number of values to check: " << f.vals.size() << std::endl;
     }
+
     for(unsigned int i = 0; i < f.vals.size(); i++) {
         //std::cout << "[DEBUG]: number of values to check: " << f.vals.size() << std::endl;
         // Note that i is the position of the fact's value.
