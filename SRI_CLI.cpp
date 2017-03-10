@@ -11,26 +11,19 @@
 SRI_CLI::SRI_CLI() {
     engine = new SRI_Engine;
     exit = false;
-    // DEBUG SECTION
-    //std::vector<string> testparams; testparams.push_back("Marry"); testparams.push_back("George");
-    //engine->addFact("FACT Father(Marry,George)", "Father", testparams);
     
-    // Parent($X,$Y):- OR Father($X,$Y) Mother($X,$Y)
-    //vector<string> rparams; rparams.push_back("$X"); rparams.push_back("$Y");
-    //vector<RFact> rfacts;
-    //vector<string> father_params; father_params.push_back("$X"); father_params.push_back("$Y");
-    //rfacts.push_back(RFact("Father", father_params));
-    //vector<string> mother_params; mother_params.push_back("$X"); mother_params.push_back("$Y");
-    //rfacts.push_back(RFact("Mother", mother_params));
-    
-    //engine->addRule("RULE Parent($X,$Y):- OR Father($X,$Y) Mother($X,$Y)", "Parent", false, rparams, rfacts);
+    // pre-populate with example commands
+    /*
     parse("FACT Father(Roger,John)");
     parse("FACT Mother(Marry,John)");
     parse("FACT Father(Roger,Albert)");
     parse("FACT Mother(Marry,Albert)");
+    parse("FACT Father(Allen,Margret)");
+    parse("FACT Mother(Margret,Robert)");
+    parse("FACT Mother(Margret,Bob)");
     parse("RULE Parent($X,$Y):- OR Father($X,$Y) Mother($X,$Y)");
-    
-    engine->print();
+    parse("RULE GrandFather($X,$Y):- AND Father($X,$Z) Parent($Z,$Y)");
+    */
 }
 
 SRI_CLI::~SRI_CLI() {
@@ -91,11 +84,11 @@ void SRI_CLI::parse(string input) {
     std::vector<string> words = split(input);
     
     // DEBUG: Print split word input.
-    cout << "[DEBUG] INPUT READ: ";
-    for(auto i : words) {
-        cout << i << ", ";
-    }
-    cout << endl;
+    //cout << "[DEBUG] INPUT READ: ";
+    //for(auto i : words) {
+    //    cout << i << ", ";
+    //}
+    //cout << endl;
     
     
     if(words.size() < 1) {
@@ -174,17 +167,7 @@ void SRI_CLI::parse(string input) {
             //    std::cout << "rfact_params from word[" << i << "]: " << j << std::endl;
         }
         
-        /*
-        std::vector<string> rfact_params;
-        for(int i = 3; i < words.size(); i++)
-            rfact_params.push_back(words[i]);
-        */
-        
-        //engine->addRule(input, name, type, rfacts);
-        
-        
         engine->addRule(input, name, type, params, rfacts);
-        
         return;
     }
     else if(words[0] == "INFERENCE") {
@@ -197,10 +180,49 @@ void SRI_CLI::parse(string input) {
         vector<string> query_params = split(words[1].substr(name_end), &delim);
         //for(auto i : query_params) std::cout << i << ",";
         
-        //engine->queryFacts(name, query_params);
-    
-        engine->query(name, query_params);
-    
+        vector<Fact> results = engine->query(name, query_params);
+        
+        // Set output formatting of query params.
+        int nqp_total = 0;
+        for(int i = 0; i < query_params.size(); i++) {
+            if(query_params[i][0] == '$') {
+                query_params[i] = query_params[i].substr(1);
+                nqp_total++;
+            }
+            else
+                query_params[i] = "";
+        }
+        
+        // Print
+        for(int i = 0; i < results.size(); i++) {
+            int nqp = nqp_total;
+            for(int j = 0; j < query_params.size(); j++) {
+                if(query_params[j] != "") {
+                    cout << query_params[j] << ":" << results[i].vals[j];
+                    if(--nqp)
+                        cout << ", ";
+                }
+            }
+            cout << endl;
+        }
+        
+        if(words.size() == 3) {
+            string set_name = words[2];
+            // This result is to be saved with the given name.
+            for(int i = 0; i < results.size(); i++) {
+                results[i].name = set_name;
+                string d = "FACT " + set_name + "(";
+                for(int j = 0; j < results[i].vals.size(); j++) {
+                    d += results[i].vals[j];
+                    if(j < results[i].vals.size() - 1)
+                        d += ",";
+                }
+                d += ")";
+                results[i].def = d;
+                engine->addFact(results[i]);
+            }
+        }
+        
         return;
     }
     else if(words[0] == "DROP")

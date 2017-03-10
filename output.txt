@@ -1,0 +1,2 @@
+FACT Father(Roger,John)FACT Father(Roger,Albert)
+FACT Mother(Marry,John)FACT Mother(Marry,Albert)
