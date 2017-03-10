@@ -269,7 +269,7 @@ vector<Fact> SRI_Engine::queryRules(string r_name, vector<string> params, string
             }
         }else if(r->operation == Rule::OR) {
             std::cout << "OR rule\n";
-            //qtm.setup();
+            qtm.setup();
         
             for(unsigned int i = 0; i < r->facts.size(); i++) {
                 vector<string> factParams(r->facts[i].params); // Copy parameter format for editing
@@ -284,18 +284,19 @@ vector<Fact> SRI_Engine::queryRules(string r_name, vector<string> params, string
                 // any previously defined param of the rule is replaced with
                 // a calling param, if available.
                 
-                //qtm.addThread(r->facts[i].name, factParams, i);
-                vector<Fact> fact_results = query(r->facts[i].name, factParams);
+                qtm.addThread(r->facts[i].name, factParams, i);
+                //vector<Fact> fact_results = query(r->facts[i].name, factParams);
                 
                 
                 
-                results.insert(results.end(), fact_results.begin(), fact_results.end());
+                //results.insert(results.end(), fact_results.begin(), fact_results.end());
                 
             }
             
-            //vector<Fact>* qt_res = qtm.barrier();
-            //std::cout << "qt_res->size() = " << qt_res->size() << std::endl;
-            //results.insert(results.end(), qt_res->begin(), qt_res->end());
+            qtm.start();
+            vector<Fact>* qt_res = qtm.barrier();
+            std::cout << "qt_res->size() = " << qt_res->size() << std::endl;
+            results.insert(results.end(), qt_res->begin(), qt_res->end());
         }
     }
     std::cout << "results.size() = " << results.size() << std::endl;
