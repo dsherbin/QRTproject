@@ -36,7 +36,6 @@ class SRI_Engine {
       map<string, vector<Fact>> facts;
       map<string, vector<Rule>> rules;
       bool checkFact(const Fact&, const vector<QueryParam>&, int);
-      QueryThreadManager qtm;
       enum clauseType { CT_NONE, CT_FACT, CT_RULE };
     public:
       SRI_Engine();

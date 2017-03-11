@@ -8,7 +8,7 @@
 #include "SRI_Engine.h"
 
 // Default constructor
-SRI_Engine::SRI_Engine() : qtm(&facts, &rules) {}
+SRI_Engine::SRI_Engine(){}
 
 // Destructor
 SRI_Engine::~SRI_Engine() {}
