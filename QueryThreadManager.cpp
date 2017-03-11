@@ -39,4 +39,5 @@ vector<Fact>* QueryThreadManager::barrier() {
 // Destructor
 QueryThreadManager::~QueryThreadManager() {
     for(int i = 0; i < qt.size(); i++) delete (qt[i]);
+    delete results;
 }
