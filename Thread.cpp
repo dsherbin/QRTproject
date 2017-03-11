@@ -80,6 +80,7 @@ void * Thread::run(void * arg)
         pthread_exit(NULL); // Invoke pthread_exit to terminate and invoke the cleanup functions.
 }
 */
+// Using unix hotfix
 void * Thread::run(void * arg)
 {
 	Thread * me = (Thread *) arg; // Cast the arg to Thread * which is the current thread

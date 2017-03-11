@@ -7,6 +7,7 @@
 
 #include "QueryThread.h"
 
+// Constructor.
 QueryThread::QueryThread(map<string, vector<Fact>>* f,
         map<string, vector<Rule>>* r, string n, vector<string> p, int id,
         pthread_mutex_t* cout_m, pthread_mutex_t* write_m, vector<Fact>* results) {
@@ -20,10 +21,10 @@ QueryThread::QueryThread(map<string, vector<Fact>>* f,
     write_mtx = write_m;
 }
 
-QueryThread::~QueryThread() {
-    //delete res;
-}
+// Destructor.
+QueryThread::~QueryThread() {}
 
+// Override of threadMainBody. Begins fact query.
 void* QueryThread::threadMainBody(void* arg) {
     pthread_mutex_lock(cout_mtx);
     std::cout << "thread " << tid << " started\n";
@@ -31,21 +32,14 @@ void* QueryThread::threadMainBody(void* arg) {
     
     vector<Fact> results;
     
-    
     auto fi = kb->find(name);
     if(fi != kb->end())
         results = queryFacts(name, params);
-    
-    auto ri = rb->find(name);
-    if(ri != rb->end())
-        results = queryFacts(name, params); // CHANGE TO QUERYRULES BEFORE FINAL COMMIT
     
     // Write results to shared result vector
     pthread_mutex_lock(write_mtx);
     res->insert(res->end(), results.begin(), results.end());
     pthread_mutex_unlock(write_mtx);
-    
-    
     
     pthread_mutex_lock(cout_mtx);
     std::cout << "thread " << tid << " ending\n";
@@ -54,8 +48,8 @@ void* QueryThread::threadMainBody(void* arg) {
     return nullptr;
 }
 
+// Query the knowledge base using the given fact name and parameters.
 vector<Fact> QueryThread::queryFacts(string f_name, vector<string> params) {
-    //std::cout << "querying facts...\n";
     int nParams = params.size();
     vector<QueryParam> qParams;
     vector<Fact> results;
@@ -80,7 +74,6 @@ vector<Fact> QueryThread::queryFacts(string f_name, vector<string> params) {
     
     for(unsigned int i = 0; i < (*kb)[f_name].size(); i++) {
         if(checkFact((*kb)[f_name][i], qParams, nParams)) {
-            //std::cout << "found a fact\n";
             results.push_back((*kb)[f_name][i]);
         }
     }
@@ -105,14 +98,7 @@ bool QueryThread::checkFact(const Fact& f, const vector<QueryParam>& qp, int np)
     }
     
     vector<QueryParam> current_vals(qp); // Make copy of parameters, so we can edit this copy.
-    
-    // Loop through each value of the fact.
-    //for(unsigned int i = 0; i < f.vals.size(); i++) {
-        //std::cout << "[DEBUG]: number of values to check: " << f.vals.size() << std::endl;
-    //}
-
     for(unsigned int i = 0; i < f.vals.size(); i++) {
-        //std::cout << "[DEBUG]: number of values to check: " << f.vals.size() << std::endl;
         // Note that i is the position of the fact's value.
         // I.E. for Father(Roger,George), Roger is in position i = 0, George in i = 1.
 
