@@ -29,26 +29,26 @@ using std::map;
 
 #include "Thread.h"
 #include "QueryThread.h"
+#include "QueryThreadManager.h"
 
 class SRI_Engine {
     private:
       map<string, vector<Fact>> facts;
       map<string, vector<Rule>> rules;
       bool checkFact(const Fact&, const vector<QueryParam>&, int);
-    
-      QueryThreadManager qtm = QueryThreadManager();
-      std::mutex cout_mtx;
+      QueryThreadManager qtm;
+      enum clauseType { CT_NONE, CT_FACT, CT_RULE };
     public:
       SRI_Engine();
       void addFact(string, string, vector<string>);
-      void addRule(string, string, bool, vector<string>, vector<RFact>);
+      void addRule(string, string, int, vector<string>, vector<RFact>);
       bool containsFact(string &name);
       bool containsRule(string &name);
       void dropRule(string &name);
       void dropFact(string &name);
       vector<Fact> queryFacts(string, vector<string>);
-      //vector<Fact> queryRules(string, vector<string>);
-      vector<Fact> queryRules(string, vector<string>, string);
+      vector<Fact> queryRules(string, vector<string>);
+      int getClauseType(string);
       vector<Fact> query(string, vector<string>);
       void dump(string filename);
       void addFact(Fact);

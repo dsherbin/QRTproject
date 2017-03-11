@@ -16,24 +16,29 @@ SRI_CLI::SRI_CLI() {
     engine = new SRI_Engine;
     exit = false;
     
-        // pre-populate with example commands
+    /*
+    // pre-populate with example commands for testing
     parse("FACT Father(Roger,John)");
-
     parse("FACT Mother(Marry,John)");
-
     parse("FACT Father(Roger,Albert)");
-
     parse("FACT Mother(Marry,Albert)");
-
     parse("FACT Father(Allen,Margret)");
-
     parse("FACT Mother(Margret,Robert)");
-
     parse("FACT Mother(Margret,Bob)");
+    
+    parse("FACT Apple(Red,Delicious)");
+    parse("FACT Apple(Green,Sour)");
+    parse("FACT Orange(Orange,Delicious)");
+    parse("FACT Orange(Green,Sour)");
+    parse("FACT Cherry(Red,Delicious)");
+    parse("FACT Cherry(Green,Sour)");
+    parse("FACT Banana(Yellow,Delicious)");
+    parse("FACT Banana(Green,Sour)");
 
     parse("RULE Parent($X,$Y):- OR Father($X,$Y) Mother($X,$Y)");
-
+    parse("RULE QueryTest($X,$Y):- OR Apple($X,$Y) Orange($X,$Y) Cherry($X,$Y) Banana($X,$Y)");
     parse("RULE GrandFather($X,$Y):- AND Father($X,$Z) Parent($Z,$Y)");
+    */
 }
 
 SRI_CLI::~SRI_CLI() {
@@ -52,14 +57,6 @@ void SRI_CLI::start() {
 
 // Split the given string into a vector of substrings.
 // Splits on whitespace by default, or by deliminating character if provided.
-/*
-std::vector<string> SRI_CLI::split(string s, const vector<char> * delim = NULL){
-    std::istringstream iss(s);
-    std::vector<string> words = {   std::istream_iterator<string>{iss},
-                                    std::istream_iterator<string>{} };
-    return words;
-}
-*/
 // (using previous function for delimitor list support)
 std::vector<string> SRI_CLI::split(string s, const vector<char>* delim = NULL) {
     std::vector<string> ws;
@@ -107,21 +104,13 @@ void SRI_CLI::load(const string filename){
 }
 
 void SRI_CLI::inference(std::vector<string> &words){
-    
-    //std::cout << "INFERENCE CALLED\n";
-    //for(auto w : words) std::cout << w << std::endl;
-
     // Perform a query.
     int name_end = words[1].find("(");
     string name = words[1].substr(0, name_end);
     
     vector<char> delim = {'(',')', ','};
     vector<string> query_params = split(words[1].substr(name_end), &delim);
-    //for(auto s : query_params) std:: cout << s << std::endl;
-    //engine->beginQuery(name, query_params);
     vector<Fact> results = engine->query(name, query_params);
-    
-    //std::cout << "results length: " << results.size() << std::endl;
     
     // Set output formatting of query params.
     int nqp_total = 0;
@@ -195,11 +184,11 @@ void SRI_CLI::rule(std::vector<string> &words, string &input){
     string raw_params = words[1].substr(name_end, (params_end - name_end) + 1);
     vector<string> params = split(raw_params, &delim);
 
-    bool type;
+    int type;
     if(words[2] == "AND")
-        type = true;
-    if(words[2] == "OR")
-        type = false;
+        type = 1;
+    else // OR
+        type = 2;
 
     vector<RFact> rfacts;
 
@@ -226,8 +215,6 @@ void SRI_CLI::drop(std::vector<string> &words){
 // Parse the given input string.
 void SRI_CLI::parse(string input) {
     std::vector<string> words = split(input);
-    
-    //for(auto s : words) { std::cout << s << std::endl; }
     
     if(words.size() < 1) {
         std::cout << "Invalid command." << std::endl;

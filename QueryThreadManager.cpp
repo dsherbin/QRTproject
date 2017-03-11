@@ -3,32 +3,40 @@
 //  cojboyer@ucsc.edu, pdlandis@ucsc.edu, dsherbin@ucsc.edu
 //  CMPS 109 Winter '17 Group Project
 //
-//  Function definitions for the QueryThreadManager class.
-//  These are almost entirely copied from Dr. Sobh's ThreadManager example.
+//  Function definitions for the QueryThreadManager class, adapted from Dr. Sobh's ThreadManager example.
 
-#include "QueryThread.h"
+#include "QueryThreadManager.h"
 
-QueryThreadManager::QueryThreadManager() {
-    qt = vector<QueryThread*>();
-    //std::cout << "qt initialized\n";
-    //std::cout << "qt size: " << qt.size() << std::endl;
+// Constructor
+QueryThreadManager::QueryThreadManager(map<string, vector<Fact>>* f, map<string, vector<Rule>>* r) {
+    kb = f;
+    rb = r;
+    pthread_mutex_init(&cout_mtx, NULL);
+    pthread_mutex_init(&write_mtx, NULL);
 }
 
-void QueryThreadManager::addThread(QueryThread* q_thread) {
-    //std::cout << "adding new thread...\n";
-    qt.push_back(q_thread);
-    //std::cout << "success\n";
+// Prepare the thread manager. Clears previous result set, if any.
+void QueryThreadManager::setup() {
+    results = new vector<Fact>();
 }
 
+// Add a thread to the query manager. Will process the given fact name with the given parameters.
+void QueryThreadManager::addThread(string q_n, vector<string> q_p) {
+    qt.push_back(new QueryThread(kb, rb, q_n, q_p, qt.size(), &cout_mtx, &write_mtx, results));
+}
+
+// Start the threads.
 void QueryThreadManager::start() {
     for(int i = 0; i < qt.size(); i++) qt[i]->start();
 }
 
-void QueryThreadManager::barrier() {
+// Wait for threads to complete, and return the result set.
+vector<Fact>* QueryThreadManager::barrier() {
     for(int i = 0; i < qt.size(); i++) qt[i]->waitForRunToFinish();
+    return results;
 }
 
+// Destructor
 QueryThreadManager::~QueryThreadManager() {
-    //std::cout << "~querythreadmanager()\n";
     for(int i = 0; i < qt.size(); i++) delete (qt[i]);
 }
