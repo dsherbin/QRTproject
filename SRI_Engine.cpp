@@ -269,7 +269,9 @@ vector<Fact> SRI_Engine::queryRules(string r_name, vector<string> params) {
             }
         }else if(r->operation == Rule::OR) {
             //std::cout << "OR rule\n";
-            qtm.setup();
+            
+            QueryThreadManager tm(&facts, &rules);
+            tm.setup();
         
             for(unsigned int i = 0; i < r->facts.size(); i++) {
                 vector<string> factParams(r->facts[i].params); // Copy parameter format for editing
@@ -285,15 +287,15 @@ vector<Fact> SRI_Engine::queryRules(string r_name, vector<string> params) {
                 // a calling param, if available.
                 
                 if(getClauseType(r->facts[i].name) == CT_FACT)
-                    qtm.addThread(r->facts[i].name, factParams, i);
+                    tm.addThread(r->facts[i].name, factParams);
                 else {
                     vector<Fact> fact_results = query(r->facts[i].name, factParams);
                     results.insert(results.end(), fact_results.begin(), fact_results.end());
                 }
             }
             
-            qtm.start();
-            vector<Fact>* qt_res = qtm.barrier();
+            tm.start();
+            vector<Fact>* qt_res = tm.barrier();
             //std::cout << "qt_res->size() = " << qt_res->size() << std::endl;
             results.insert(results.end(), qt_res->begin(), qt_res->end());
         }

@@ -14,6 +14,7 @@ QueryThreadManager::QueryThreadManager(map<string, vector<Fact>>* f, map<string,
     rb = r;
     pthread_mutex_init(&cout_mtx, NULL);
     pthread_mutex_init(&write_mtx, NULL);
+    //n_threads = 0;
     //results = new vector<Fact>();
     //std::cout << "qt initialized\n";
     //std::cout << "qt size: " << qt.size() << std::endl;
@@ -28,16 +29,17 @@ void QueryThreadManager::addThread(QueryThread* q_thread) {
 
 // Prepare the thread manager. Clears previous result set, if any.
 void QueryThreadManager::setup() {
-    if(results) delete results;
+    //if(results) delete results;
     results = new vector<Fact>();
 }
 
 void QueryThreadManager::addThread(//map<string, vector<Fact>>* f, map<string, vector<Rule>>* r,
-            string q_n, vector<string> q_p, int id) {
-    qt.push_back(new QueryThread(kb, rb, q_n, q_p, id, &cout_mtx, &write_mtx, results));
+            string q_n, vector<string> q_p) {
+    qt.push_back(new QueryThread(kb, rb, q_n, q_p, qt.size(), &cout_mtx, &write_mtx, results));
 }
 
 void QueryThreadManager::start() {
+    std::cout << "querythreadmanager::start()\n";
     for(int i = 0; i < qt.size(); i++) qt[i]->start();
 }
 
@@ -47,7 +49,9 @@ vector<Fact>* QueryThreadManager::barrier() {
 }
 
 QueryThreadManager::~QueryThreadManager() {
-    //std::cout << "~querythreadmanager()\n";
+    //std::cout << "~querythreadmanager() start\n";
     for(int i = 0; i < qt.size(); i++) delete (qt[i]);
-    if(results) delete results;
+    //n_threads = 0;
+    //if(results) delete results;
+    //std::cout << "~querythreadmanager() end\n";
 }

@@ -28,7 +28,7 @@ class QueryThreadManager {
     public:
         QueryThreadManager(map<string, vector<Fact>>*, map<string, vector<Rule>>*);
         void setup();
-        void addThread(string, vector<string>, int);
+        void addThread(string, vector<string>);
         void start();
         vector<Fact>* barrier();
         ~QueryThreadManager();

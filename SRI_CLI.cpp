@@ -16,23 +16,26 @@ SRI_CLI::SRI_CLI() {
     engine = new SRI_Engine;
     exit = false;
     
-        // pre-populate with example commands
+    // pre-populate with example commands for testing
     parse("FACT Father(Roger,John)");
-
     parse("FACT Mother(Marry,John)");
-
     parse("FACT Father(Roger,Albert)");
-
     parse("FACT Mother(Marry,Albert)");
-
     parse("FACT Father(Allen,Margret)");
-
     parse("FACT Mother(Margret,Robert)");
-
     parse("FACT Mother(Margret,Bob)");
+    
+    parse("FACT Apple(Red,Delicious)");
+    parse("FACT Apple(Green,Sour)");
+    parse("FACT Orange(Orange,Delicious)");
+    parse("FACT Orange(Green,Sour)");
+    parse("FACT Cherry(Red,Delicious)");
+    parse("FACT Cherry(Green,Sour)");
+    parse("FACT Banana(Yellow,Delicious)");
+    parse("FACT Banana(Green,Sour)");
 
     parse("RULE Parent($X,$Y):- OR Father($X,$Y) Mother($X,$Y)");
-
+    parse("RULE QueryTest($X,$Y):- OR Apple($X,$Y) Orange($X,$Y) Cherry($X,$Y) Banana($X,$Y)");
     parse("RULE GrandFather($X,$Y):- AND Father($X,$Z) Parent($Z,$Y)");
 }
 
