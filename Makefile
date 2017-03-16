@@ -1,7 +1,7 @@
 PARAMS= -std=c++11 -Wall
 
-p3: main.o SRI_CLI.o SRI_Engine.o Rule.o Fact.o QueryParam.o Thread.o QueryThread.o QueryThreadManager.o
-	g++ main.o SRI_CLI.o SRI_Engine.o Rule.o Fact.o QueryParam.o Thread.o QueryThread.o QueryThreadManager.o -o p3
+p3: main.o SRI_CLI.o SRI_Engine.o Rule.o Fact.o QueryParam.o Thread.o QueryThread.o QueryThreadManager.o TCPSocket.o TCPServerSocket.o
+	g++ main.o SRI_CLI.o SRI_Engine.o Rule.o Fact.o QueryParam.o Thread.o QueryThread.o QueryThreadManager.o TCPSocket.o TCPServerSocket.o -o p3
 
 main.o: main.cpp main.h
 	g++ -c main.cpp $(PARAMS) -o main.o
@@ -29,6 +29,12 @@ QueryThread.o: QueryThread.cpp QueryThread.h
 
 QueryThreadManager.o: QueryThreadManager.cpp QueryThreadManager.h
 	g++ -c QueryThreadManager.cpp $(PARAMS) -o QueryThreadManager.o
+
+TCPSocket.o: TCPSocket.cpp TCPSocket.h
+	g++ -c TCPSocket.cpp $(PARAMS) -o TCPSocket.o
+
+TCPServerSocket.o: TCPServerSocket.cpp TCPServerSocket.h
+	g++ -c TCPServerSocket.cpp $(PARAMS) -o TCPServerSocket.o
 
 clean:
 	rm -f *.o p3
