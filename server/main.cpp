@@ -10,10 +10,12 @@
 
 int main(int argc, const char* argv[]) {
     
-    std::cout << "Program started. Type 'q' to quit.\n";
-    SRI_CLI cli;
-    cli.start();
-    std::cout << "Program ending.\n";
+    //std::cout << "Program started. Type 'q' to quit.\n";
+    //SRI_CLI cli;
+    //cli.start();
+    //std::cout << "Program ending.\n";
+    
+    SRI_Engine engine;
     
     int sock; // Socket Handler
     struct sockaddr_in serverAddr; // Server Address Structure

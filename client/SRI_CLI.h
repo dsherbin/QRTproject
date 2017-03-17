@@ -11,7 +11,10 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "SRI_Engine.h"
+#include <fstream>
+#include "Fact.h"
+#include "Rule.h"
+//#include "SRI_Engine.h"
 using std::string;
 using std::cout;
 using std::endl;
@@ -19,7 +22,7 @@ using std::vector;
 
 class SRI_CLI {
     private:
-      SRI_Engine* engine;
+      //SRI_Engine* engine;
       std::vector<string> split(string,const vector<char>*);
       bool exit;
     public:

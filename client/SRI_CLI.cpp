@@ -13,7 +13,7 @@
 
 // Constructor
 SRI_CLI::SRI_CLI() {
-    engine = new SRI_Engine;
+    //engine = new SRI_Engine;
     exit = false;
     
     /*
@@ -42,7 +42,7 @@ SRI_CLI::SRI_CLI() {
 }
 
 SRI_CLI::~SRI_CLI() {
-    delete engine;
+    //delete engine;
 }
 
 // Begin a CLI session.
@@ -110,7 +110,8 @@ void SRI_CLI::inference(std::vector<string> &words){
     
     vector<char> delim = {'(',')', ','};
     vector<string> query_params = split(words[1].substr(name_end), &delim);
-    vector<Fact> results = engine->query(name, query_params);
+    //vector<Fact> results = engine->query(name, query_params);
+    vector<Fact> results;
     
     // Set output formatting of query params.
     int nqp_total = 0;
@@ -149,7 +150,7 @@ void SRI_CLI::inference(std::vector<string> &words){
             }
             d += ")";
             results[i].def = d;
-            engine->addFact(results[i]);
+            //engine->addFact(results[i]);
         }
     }
 }
@@ -169,7 +170,7 @@ void SRI_CLI::fact(std::vector<string> &words, string &input){
         fact_params.push_back(fact_params_all[i]);
     }
     
-    engine->addFact(input, fact_params_all[0], fact_params);
+    //engine->addFact(input, fact_params_all[0], fact_params);
 }
 
 void SRI_CLI::rule(std::vector<string> &words, string &input){
@@ -199,17 +200,17 @@ void SRI_CLI::rule(std::vector<string> &words, string &input){
         rfacts.push_back(RFact(rfact_name, rfact_params));
     }
 
-    engine->addRule(input, name, type, params, rfacts);
+    //engine->addRule(input, name, type, params, rfacts);
 }
 
 void SRI_CLI::drop(std::vector<string> &words){
-    if(engine->containsRule(words[1])){
-        engine->dropRule(words[1]);
-    }
+    //if(engine->containsRule(words[1])){
+    //    engine->dropRule(words[1]);
+    //}
 
-    if(engine->containsFact(words[1])){
-        engine->dropFact(words[1]);
-    }
+    //if(engine->containsFact(words[1])){
+    //    engine->dropFact(words[1]);
+    //}
 }
 
 // Parse the given input string.
@@ -225,7 +226,7 @@ void SRI_CLI::parse(string input) {
     if(words[0] == "LOAD"){
         load(words[1]);
     }else if(words[0] == "DUMP"){
-        engine->dump(words[1]);
+        //engine->dump(words[1]);
     }else if(words[0] == "FACT"){
         fact(words, input);
     }else if(words[0] == "RULE"){
@@ -235,7 +236,7 @@ void SRI_CLI::parse(string input) {
     }else if(words[0] == "DROP"){
         drop(words);
     }else if(words[0] == "PRINT"){
-        engine->print();
+        //engine->print();
     }else if(words[0] == "q" || words[0] == "quit" || words[0] == "exit") {
         exit = true;
     }else{
