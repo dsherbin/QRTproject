@@ -7,6 +7,7 @@
 
 #include "main.h"
 
+#include "TCPSocket.h"
 
 int main(int argc, const char* argv[]) {
     
@@ -15,4 +16,5 @@ int main(int argc, const char* argv[]) {
     cli.start();
     std::cout << "Program ending.\n";
     
+    TCPSocket socket((char*)"localhost", 9999, 10, 10);
 }
