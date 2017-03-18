@@ -12,9 +12,9 @@ void FileCacheItem::load ()
         throw(HTTPNotFoundExceptionHandler());
     }
     stat(file_name.c_str(), &cache_item_stat);
-    
-
+    //I hope I loaded in all the variables correctly
 }
+
 FileCacheItem::FileCacheItem()
 {
     file_name = ""; // Set file name

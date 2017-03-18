@@ -6,6 +6,14 @@
 // One of the most important things is that an object of that type represent the most receint content of the file.
 
 #include "SRI_CLI.h"
+/*
+    How it works.  Basically, my idea was that the files can be anything, as long as a string uniquely represents it.
+    Therefore, each SRI call can be interpreted as a filename.  It also works with the HTTP style, since something like INFERENCE
+    requires a known state (the cache) and a way to update its knowledge (updating things in the cache).  We also want to do this in a multithreaded way,
+    since new RULEs and FACTs could be added at any time
+    Author of all this ADDITIONAL code: Cole Boyer
+    I obviously take no credit for Prof Sobh's work.
+*/
 
 class FileCacheItem
 {

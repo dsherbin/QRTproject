@@ -8,7 +8,7 @@ FileCache::FileCache(string p_root) {
 // Get the most updated version of the Cache File Item with p_file_name 
 FileCacheItem * FileCache::getFile(string p_file_name)
 {
-    string file_name = root+p_file_name; // Add the root directory to the file
+    string file_name = p_file_name; // No adding the root directory to the file
     if ( cache[file_name] == NULL) { // file does not exit in the cache
         // Create a new file item
         FileCacheItem * fileCacheItem = new FileCacheItem(file_name, cli);
