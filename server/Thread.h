@@ -1,10 +1,3 @@
-/*
- * Thread.h
- *
- *  Created on: Nov 10, 2010
- *      Author: Karim Sobh
- */
-
 #ifndef THREAD_H
 #define THREAD_H
 

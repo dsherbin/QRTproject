@@ -79,7 +79,6 @@ TCPSocket * TCPServerSocket::getConnection (int timeoutSec, int timeoutMilli,int
 	{
                 // Wait for connection indefinitely
 		newsock = accept(sock, (struct sockaddr *)&clientAddr,&sin_size);
-
 	}
 	else { // Set up time out timeval and file descriptors set
                 fd_set fds; 

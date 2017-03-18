@@ -16,6 +16,7 @@
 #include <sstream>
 #include <cstdlib>
 #include <sstream>
+#include <strings.h>
 
 using namespace std;
 

@@ -1,7 +1,6 @@
 #ifndef __includes_h__
 #define __includes_h__
 #include "common.h"
-#include <execinfo.h>
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
@@ -35,17 +34,16 @@
 #include <arpa/inet.h>
 #include <ctype.h>
 #include <dirent.h>
-//#include <mysql/mysql.h>
-#include<netdb.h>
-#include<netinet/udp.h>
-#include<netinet/tcp.h>
-#include<netinet/ip.h>
-#include<sys/socket.h>
-#include<net/if.h>
-#include<net/ethernet.h>
-#include<netinet/in.h>
-#include<sys/ioctl.h>
-#include<sys/ipc.h>
+#include <netdb.h>
+#include <netinet/udp.h>
+#include <netinet/tcp.h>
+#include <netinet/ip.h>
+#include <sys/socket.h>
+#include <net/if.h>
+#include <net/ethernet.h>
+#include <netinet/in.h>
+#include <sys/ioctl.h>
+#include <sys/ipc.h>
 #include <sys/stat.h>
 
 
@@ -132,6 +130,3 @@
 #define SHARED_LIB_NODE_TYPE                    'r'
 
 #endif
-
-
-//~ Formatted by Jindent --- http://www.jindent.com
