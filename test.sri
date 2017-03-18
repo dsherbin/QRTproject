@@ -1,5 +1,0 @@
-FACT Father(Roger,John)
-FACT Father(Roger,Albert)
-FACT Mother(Marry,John)
-FACT Mother(Marry,Albert)
-RULE Parent($X,$Y):- OR Father($X,$Y) Mother($X,$Y)

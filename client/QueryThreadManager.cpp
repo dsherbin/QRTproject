@@ -27,17 +27,17 @@ void QueryThreadManager::addThread(string q_n, vector<string> q_p) {
 
 // Start the threads.
 void QueryThreadManager::start() {
-    for(int i = 0; i < qt.size(); i++) qt[i]->start();
+    for(unsigned int i = 0; i < qt.size(); i++) qt[i]->start();
 }
 
 // Wait for threads to complete, and return the result set.
 vector<Fact>* QueryThreadManager::barrier() {
-    for(int i = 0; i < qt.size(); i++) qt[i]->waitForRunToFinish();
+    for(unsigned int i = 0; i < qt.size(); i++) qt[i]->waitForRunToFinish();
     return results;
 }
 
 // Destructor
 QueryThreadManager::~QueryThreadManager() {
-    for(int i = 0; i < qt.size(); i++) delete (qt[i]);
+    for(unsigned int i = 0; i < qt.size(); i++) delete (qt[i]);
     delete results;
 }
