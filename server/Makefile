@@ -1,10 +1,10 @@
-PARAMS= -std=c++11 -Wall
+PARAMS= -std=c++11 -Wall -pthread
 
 p4_server: main.o SRI_Engine.o Rule.o Fact.o QueryParam.o Thread.o QueryThread.o QueryThreadManager.o TCPSocket.o TCPServerSocket.o
-	g++ main.o SRI_Engine.o Rule.o Fact.o QueryParam.o Thread.o QueryThread.o QueryThreadManager.o TCPSocket.o TCPServerSocket.o -o p4_server
+	g++ main.o SRI_Engine.o *.o -o p4_server
 
 main.o: main.cpp main.h
-	g++ -c main.cpp $(PARAMS) -o main.o
+	g++ -c *.cpp $(PARAMS)
 
 SRI_Engine.o: SRI_Engine.cpp SRI_Engine.h
 	g++ -c SRI_Engine.cpp $(PARAMS) -o SRI_Engine.o
